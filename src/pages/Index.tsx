@@ -1,12 +1,68 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { useApp } from "@/context/AppContext";
+import { StatsCards } from "@/components/StatsCards";
+import { SubscriptionList } from "@/components/SubscriptionList";
+import { SpendByCategory } from "@/components/SpendByCategory";
+import { SubscriptionDetail } from "@/components/SubscriptionDetail";
+import { AddSubscriptionDialog } from "@/components/AddSubscriptionDialog";
+import { AppSidebar } from "@/components/AppSidebar";
+import { Subscription } from "@/lib/types";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
+  const { activeContext } = useApp();
+  const [addOpen, setAddOpen] = useState(false);
+  const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
+
+  const handleSelect = (sub: Subscription) => {
+    setSelectedSub(sub);
+    setDetailOpen(true);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="flex min-h-screen w-full">
+      <AppSidebar onAddClick={() => setAddOpen(true)} />
+
+      <main className="flex-1 overflow-auto">
+        <header className="flex h-14 items-center justify-between border-b px-6">
+          <div>
+            <h1 className="text-lg font-semibold">
+              {activeContext === "personal" ? "Personal" : "Organisation"} Dashboard
+            </h1>
+          </div>
+          <Button
+            size="sm"
+            className="bg-accent text-accent-foreground hover:bg-accent/90 md:hidden"
+            onClick={() => setAddOpen(true)}
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            Add
+          </Button>
+        </header>
+
+        <div className="p-6 space-y-6 max-w-6xl">
+          <StatsCards />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <h2 className="text-sm font-medium text-muted-foreground mb-3">Subscriptions</h2>
+              <SubscriptionList onSelect={handleSelect} />
+            </div>
+            <div>
+              <SpendByCategory />
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <AddSubscriptionDialog open={addOpen} onOpenChange={setAddOpen} />
+      <SubscriptionDetail
+        subscription={selectedSub}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
     </div>
   );
 };
