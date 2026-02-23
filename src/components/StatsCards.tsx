@@ -30,13 +30,13 @@ export function StatsCards() {
       label: "Monthly Spend",
       value: `€${stats.monthlyTotal.toFixed(2)}`,
       icon: CreditCard,
-      accent: "text-accent",
+      accent: "text-primary",
     },
     {
       label: "Annual Projection",
       value: `€${stats.annualTotal.toFixed(2)}`,
       icon: TrendingUp,
-      accent: "text-accent",
+      accent: "text-primary",
     },
     {
       label: "Active Subscriptions",
