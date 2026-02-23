@@ -1,11 +1,15 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
 import { Subscription, Context } from "@/lib/types";
-import { mockSubscriptions } from "@/lib/mock-data";
+import { mockSubscriptions, mockOrganisations, Organisation } from "@/lib/mock-data";
 
 interface AppState {
   subscriptions: Subscription[];
+  organisations: Organisation[];
   activeContext: Context;
+  activeOrgId: string | null;
+  activeOrg: Organisation | null;
   setActiveContext: (ctx: Context) => void;
+  setActiveOrgId: (id: string) => void;
   addSubscription: (sub: Omit<Subscription, "id">) => void;
   removeSubscription: (id: string) => void;
   updateSubscription: (id: string, data: Partial<Subscription>) => void;
@@ -17,8 +21,21 @@ const AppContext = createContext<AppState | null>(null);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(mockSubscriptions);
   const [activeContext, setActiveContext] = useState<Context>("personal");
+  const [activeOrgId, setActiveOrgId] = useState<string>(mockOrganisations[0].id);
 
-  const filtered = subscriptions.filter((s) => s.context === activeContext);
+  const activeOrg = useMemo(
+    () => mockOrganisations.find((o) => o.id === activeOrgId) || null,
+    [activeOrgId]
+  );
+
+  const filtered = useMemo(() => {
+    if (activeContext === "personal") {
+      return subscriptions.filter((s) => s.context === "personal");
+    }
+    return subscriptions.filter(
+      (s) => s.context === "organisation" && s.organisationId === activeOrgId
+    );
+  }, [subscriptions, activeContext, activeOrgId]);
 
   const addSubscription = useCallback((sub: Omit<Subscription, "id">) => {
     setSubscriptions((prev) => [
@@ -41,8 +58,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider
       value={{
         subscriptions,
+        organisations: mockOrganisations,
         activeContext,
+        activeOrgId,
+        activeOrg,
         setActiveContext,
+        setActiveOrgId,
         addSubscription,
         removeSubscription,
         updateSubscription,

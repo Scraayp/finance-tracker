@@ -4,14 +4,14 @@ import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const COLORS = [
-  "hsl(168, 72%, 40%)",
-  "hsl(222, 47%, 40%)",
-  "hsl(38, 92%, 50%)",
-  "hsl(0, 72%, 51%)",
-  "hsl(280, 60%, 50%)",
+  "hsl(152, 60%, 48%)",
   "hsl(190, 70%, 45%)",
-  "hsl(340, 60%, 50%)",
-  "hsl(120, 40%, 45%)",
+  "hsl(38, 92%, 50%)",
+  "hsl(280, 50%, 55%)",
+  "hsl(0, 65%, 55%)",
+  "hsl(210, 60%, 50%)",
+  "hsl(340, 55%, 50%)",
+  "hsl(120, 40%, 50%)",
 ];
 
 export function SpendByCategory() {
@@ -59,8 +59,9 @@ export function SpendByCategory() {
                 formatter={(value: number) => `€${value.toFixed(2)}`}
                 contentStyle={{
                   borderRadius: "8px",
-                  border: "1px solid hsl(var(--border))",
-                  background: "hsl(var(--card))",
+                  border: "1px solid hsl(160, 6%, 16%)",
+                  background: "hsl(160, 10%, 8%)",
+                  color: "hsl(0, 0%, 95%)",
                   fontSize: "12px",
                 }}
               />

@@ -11,16 +11,11 @@ export interface Subscription {
   billingCycle: BillingCycle;
   category: SubscriptionCategory;
   context: Context;
+  organisationId?: string;
   nextBillingDate: string;
   startDate: string;
   notes?: string;
   isActive: boolean;
-}
-
-export interface Organisation {
-  id: string;
-  name: string;
-  kvkNumber?: string;
 }
 
 export const billingCycleLabels: Record<BillingCycle, string> = {
