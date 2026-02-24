@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Subscription, billingCycleLabels, categoryLabels, billingCycleMultiplier } from "@/lib/types";
 import { getSubscriptionIcon } from "@/lib/icons";
+import { getLogoUrl } from "@/lib/logos";
 import { format } from "date-fns";
 import {
   Sheet,
@@ -17,9 +19,12 @@ interface Props {
 }
 
 export function SubscriptionDetail({ subscription: s, open, onOpenChange }: Props) {
+  const [logoError, setLogoError] = useState(false);
+
   if (!s) return null;
 
   const { icon: Icon, bg, fg } = getSubscriptionIcon(s.name, s.category);
+  const logoUrl = getLogoUrl(s.name, s.publisher);
   const mult = billingCycleMultiplier[s.billingCycle];
   const monthlyEquiv = mult > 0 ? s.cost / mult : s.cost;
   const currSymbol = s.currency === "EUR" ? "€" : s.currency === "GBP" ? "£" : "$";
@@ -29,8 +34,18 @@ export function SubscriptionDetail({ subscription: s, open, onOpenChange }: Prop
       <SheetContent className="sm:max-w-md">
         <SheetHeader>
           <div className="flex items-center gap-3 mt-2">
-            <div className={`icon-badge ${bg} ${fg} h-12 w-12`}>
-              <Icon className="h-6 w-6" />
+            <div className={`icon-badge h-12 w-12 overflow-hidden ${logoUrl && !logoError ? "bg-foreground/5" : `${bg} ${fg}`}`}>
+              {logoUrl && !logoError ? (
+                <img
+                  src={logoUrl}
+                  alt={`${s.name} logo`}
+                  className="h-7 w-7 object-contain"
+                  onError={() => setLogoError(true)}
+                  loading="lazy"
+                />
+              ) : (
+                <Icon className="h-6 w-6" />
+              )}
             </div>
             <div>
               <SheetTitle className="text-left">{s.name}</SheetTitle>
