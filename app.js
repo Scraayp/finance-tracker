@@ -1,46 +1,36 @@
-// start.js
-const path = require("path");
-const express = require("express");
-const { createServer } = require("vite");
+import dotenv from "dotenv";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
 
-async function startServer() {
-  const app = express();
+// Load environment variables from .env file
+dotenv.config();
 
-  // 1. Determine the port assigned by Plesk/Passenger
-  const port = process.env.PORT || 3000;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PORT = process.env.PORT || 3000;
+const app = express();
 
-  // 2. Setup Vite in production mode
-  // Note: For production, you usually serve the 'dist' folder
-  const distPath = path.resolve(__dirname, "dist/client");
-  const serverPath = path.resolve(__dirname, "dist/server/entry-server.js");
+// Serve static files from dist folder
+const distPath = path.join(__dirname, "dist");
 
-  if (process.env.NODE_ENV === "production") {
-    // Serve static assets from the build folder
-    app.use("/", express.static(distPath, { index: false }));
+// Middleware to serve static files
+app.use(express.static(distPath, { etag: false }));
 
-    app.use("*", async (req, res) => {
-      try {
-        const render = require(serverPath).render;
-        const html = await render(req.url);
-        res.status(200).set({ "Content-Type": "text/html" }).end(html);
-      } catch (e) {
-        console.error(e.stack);
-        res.status(500).end(e.stack);
-      }
-    });
+// Handle all other routes by serving index.html (for SPA routing)
+app.get("*", (req, res) => {
+  const indexPath = path.join(distPath, "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
   } else {
-    // Development mode logic (rarely used on Plesk production)
-    const vite = await createServer({
-      server: { middlewareMode: true },
-      appType: "custom",
-    });
-    app.use(vite.middlewares);
+    res
+      .status(404)
+      .send("Not found. Please build the project first with: npm run build");
   }
+});
 
-  // 3. Start listening on the dynamic Plesk port
-  app.listen(port, () => {
-    console.log(`Vite SSR App running on port: ${port}`);
-  });
-}
-
-startServer();
+// Start the server
+app.listen(PORT, () => {
+  console.log(`✅ Finance Tracker server running on port ${PORT}`);
+  console.log(`📍 Open http://localhost:${PORT} in your browser`);
+});
