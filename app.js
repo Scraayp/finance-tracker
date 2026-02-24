@@ -1,87 +1,46 @@
-import dotenv from "dotenv";
-import { spawn } from "child_process";
-import path from "path";
-import { fileURLToPath } from "url";
+// start.js
+const path = require("path");
+const express = require("express");
+const { createServer } = require("vite");
 
-// Load environment variables from .env file
-dotenv.config();
+async function startServer() {
+  const app = express();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = process.env.PORT || 3000;
+  // 1. Determine the port assigned by Plesk/Passenger
+  const port = process.env.PORT || 3000;
 
-// Check if dist folder exists
-const distPath = path.join(__dirname, "dist");
-const maxRetries = 5;
-let retries = 0;
+  // 2. Setup Vite in production mode
+  // Note: For production, you usually serve the 'dist' folder
+  const distPath = path.resolve(__dirname, "dist/client");
+  const serverPath = path.resolve(__dirname, "dist/server/entry-server.js");
 
-function startPreviewServer() {
-  console.log(`🚀 Starting Vite preview server on port ${PORT}...`);
+  if (process.env.NODE_ENV === "production") {
+    // Serve static assets from the build folder
+    app.use("/", express.static(distPath, { index: false }));
 
-  const previewProcess = spawn(
-    "npm",
-    ["exec", "vite", "preview", "--", "--port", PORT.toString()],
-    {
-      cwd: __dirname,
-      stdio: "inherit",
-      shell: true,
-    },
-  );
+    app.use("*", async (req, res) => {
+      try {
+        const render = require(serverPath).render;
+        const html = await render(req.url);
+        res.status(200).set({ "Content-Type": "text/html" }).end(html);
+      } catch (e) {
+        console.error(e.stack);
+        res.status(500).end(e.stack);
+      }
+    });
+  } else {
+    // Development mode logic (rarely used on Plesk production)
+    const vite = await createServer({
+      server: { middlewareMode: true },
+      appType: "custom",
+    });
+    app.use(vite.middlewares);
+  }
 
-  previewProcess.on("error", (error) => {
-    console.error(`❌ Failed to start server: ${error.message}`);
-    process.exit(1);
-  });
-
-  previewProcess.on("exit", (code) => {
-    if (code !== 0) {
-      console.error(`❌ Server exited with code ${code}`);
-      process.exit(code);
-    }
-  });
-}
-
-function buildAndStart() {
-  console.log("📦 Building application...");
-
-  const buildProcess = spawn("npm", ["run", "build"], {
-    cwd: __dirname,
-    stdio: "inherit",
-    shell: true,
-  });
-
-  buildProcess.on("error", (error) => {
-    console.error(`❌ Build failed: ${error.message}`);
-    process.exit(1);
-  });
-
-  buildProcess.on("exit", (code) => {
-    if (code === 0) {
-      console.log("✅ Build completed successfully");
-      startPreviewServer();
-    } else {
-      console.error(`❌ Build failed with code ${code}`);
-      process.exit(1);
-    }
+  // 3. Start listening on the dynamic Plesk port
+  app.listen(port, () => {
+    console.log(`Vite SSR App running on port: ${port}`);
   });
 }
 
-// Main execution
-const args = process.argv.slice(2);
-const shouldBuild = args.includes("--build") || args.includes("-b");
-
-if (shouldBuild) {
-  buildAndStart();
-} else {
-  startPreviewServer();
-}
-
-// Handle graceful shutdown
-process.on("SIGINT", () => {
-  console.log("\n👋 Shutting down server gracefully...");
-  process.exit(0);
-});
-
-process.on("SIGTERM", () => {
-  console.log("\n👋 Server terminated");
-  process.exit(0);
-});
+startServer();
