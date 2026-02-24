@@ -31,36 +31,46 @@ export function StatsCards() {
       value: `€${stats.monthlyTotal.toFixed(2)}`,
       icon: CreditCard,
       accent: "text-primary",
+      iconBg: "bg-primary/10",
     },
     {
       label: "Annual Projection",
       value: `€${stats.annualTotal.toFixed(2)}`,
       icon: TrendingUp,
       accent: "text-primary",
+      iconBg: "bg-primary/10",
     },
     {
       label: "Active Subscriptions",
       value: stats.count.toString(),
       icon: CalendarClock,
       accent: "text-foreground",
+      iconBg: "bg-muted",
     },
     {
       label: "Due This Week",
       value: stats.upcoming.toString(),
       icon: AlertTriangle,
       accent: stats.upcoming > 0 ? "text-warning" : "text-muted-foreground",
+      iconBg: stats.upcoming > 0 ? "bg-warning/10" : "bg-muted",
     },
   ];
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {cards.map((c) => (
-        <div key={c.label} className="stat-card animate-fade-in">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">{c.label}</span>
-            <c.icon className={`h-4 w-4 ${c.accent}`} />
+      {cards.map((c, i) => (
+        <div
+          key={c.label}
+          className="stat-card animate-fade-in"
+          style={{ animationDelay: `${i * 60}ms`, animationFillMode: "both" }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{c.label}</span>
+            <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${c.iconBg}`}>
+              <c.icon className={`h-4 w-4 ${c.accent}`} />
+            </div>
           </div>
-          <p className={`mt-2 text-2xl font-bold tracking-tight ${c.accent}`}>{c.value}</p>
+          <p className={`text-3xl font-bold tracking-tight ${c.accent}`}>{c.value}</p>
         </div>
       ))}
     </div>

@@ -29,20 +29,20 @@ const Index = () => {
         : "Organisation Dashboard";
 
   return (
-    <div className="flex min-h-screen w-full bg-grid">
+    <div className="flex min-h-screen w-full">
       <AppSidebar onAddClick={() => setAddOpen(true)} />
 
-      <main className="flex-1 overflow-auto">
-        <header className="flex h-14 items-center justify-between border-b border-border px-6 glass-subtle">
+      <main className="flex-1 overflow-auto bg-grid">
+        <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-border/50 px-6 glass-strong">
           <div>
-            <h1 className="text-lg font-semibold">{title}</h1>
+            <h1 className="text-base font-semibold">{title}</h1>
             {activeContext === "organisation" && activeOrg?.kvkNumber && (
-              <p className="text-xs text-muted-foreground">KVK: {activeOrg.kvkNumber}</p>
+              <p className="text-[11px] text-muted-foreground">KVK: {activeOrg.kvkNumber}</p>
             )}
           </div>
           <Button
             size="sm"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 md:hidden"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg md:hidden"
             onClick={() => setAddOpen(true)}
           >
             <Plus className="h-4 w-4 mr-1" />
@@ -50,12 +50,12 @@ const Index = () => {
           </Button>
         </header>
 
-        <div className="p-6 space-y-6 max-w-6xl">
+        <div className="p-6 space-y-6 max-w-[1200px]">
           <StatsCards />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <h2 className="text-sm font-medium text-muted-foreground mb-3">Subscriptions</h2>
+              <h2 className="section-label mb-3">Subscriptions</h2>
               <SubscriptionList onSelect={handleSelect} />
             </div>
             <div>
