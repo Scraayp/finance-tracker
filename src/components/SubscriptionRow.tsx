@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Subscription, billingCycleLabels, categoryLabels } from "@/lib/types";
 import { getSubscriptionIcon } from "@/lib/icons";
+import { getLogoUrl } from "@/lib/logos";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, ChevronRight } from "lucide-react";
@@ -14,14 +16,27 @@ interface Props {
 export function SubscriptionRow({ subscription: s, onSelect }: Props) {
   const { removeSubscription } = useApp();
   const { icon: Icon, bg, fg } = getSubscriptionIcon(s.name, s.category);
+  const logoUrl = getLogoUrl(s.name, s.publisher);
+  const [logoError, setLogoError] = useState(false);
 
   return (
     <div
       className="subscription-row animate-slide-up cursor-pointer group"
       onClick={() => onSelect?.(s)}
     >
-      <div className={`icon-badge ${bg} ${fg} shrink-0`}>
-        <Icon className="h-5 w-5" />
+      {/* Logo / Icon Badge */}
+      <div className={`icon-badge shrink-0 overflow-hidden ${logoUrl && !logoError ? "bg-foreground/5" : `${bg} ${fg}`}`}>
+        {logoUrl && !logoError ? (
+          <img
+            src={logoUrl}
+            alt={`${s.name} logo`}
+            className="h-6 w-6 object-contain"
+            onError={() => setLogoError(true)}
+            loading="lazy"
+          />
+        ) : (
+          <Icon className="h-5 w-5" />
+        )}
       </div>
 
       <div className="flex-1 min-w-0">
