@@ -1,5 +1,9 @@
 import { useApp } from "@/context/AppContext";
-import { billingCycleMultiplier, categoryLabels, SubscriptionCategory } from "@/lib/types";
+import {
+  billingCycleMultiplier,
+  categoryLabels,
+  SubscriptionCategory,
+} from "@/lib/types";
 import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
@@ -19,11 +23,13 @@ export function SpendByCategory() {
 
   const data = useMemo(() => {
     const map = new Map<SubscriptionCategory, number>();
-    filtered.filter((s) => s.isActive).forEach((s) => {
-      const mult = billingCycleMultiplier[s.billingCycle];
-      const monthly = mult > 0 ? s.cost / mult : 0;
-      map.set(s.category, (map.get(s.category) || 0) + monthly);
-    });
+    filtered
+      .filter((s) => s.isActive)
+      .forEach((s) => {
+        const mult = billingCycleMultiplier[s.billingCycle];
+        const monthly = mult > 0 ? s.cost / mult : 0;
+        map.set(s.category, (map.get(s.category) || 0) + monthly);
+      });
     return Array.from(map.entries())
       .map(([cat, value]) => ({
         name: categoryLabels[cat],
@@ -61,14 +67,19 @@ export function SpendByCategory() {
               </Pie>
               <Tooltip
                 formatter={(value: number) => `€${value.toFixed(2)}`}
+                labelFormatter={(label) => label}
                 contentStyle={{
                   borderRadius: "12px",
-                  border: "1px solid hsl(150, 6%, 13%)",
-                  background: "hsl(150, 12%, 7%)",
-                  color: "hsl(0, 0%, 96%)",
+                  border: "1px solid hsl(150, 6%, 25%)",
+                  background: "hsl(150, 15%, 12%)",
+                  color: "hsl(0, 0%, 100%)",
                   fontSize: "12px",
-                  boxShadow: "0 8px 32px -8px rgba(0,0,0,0.5)",
+                  fontWeight: "500",
+                  boxShadow: "0 12px 40px rgba(0,0,0,0.6)",
+                  padding: "8px 12px",
                 }}
+                labelStyle={{ color: "hsl(0, 0%, 100%)" }}
+                cursor={{ fill: "rgba(0,0,0,0.1)" }}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -92,7 +103,9 @@ export function SpendByCategory() {
                     />
                     <span className="text-muted-foreground">{d.name}</span>
                   </div>
-                  <span className="font-mono font-medium text-foreground">€{d.value.toFixed(2)}</span>
+                  <span className="font-mono font-medium text-foreground">
+                    €{d.value.toFixed(2)}
+                  </span>
                 </div>
                 <div className="h-1 w-full rounded-full bg-muted/40 overflow-hidden">
                   <div

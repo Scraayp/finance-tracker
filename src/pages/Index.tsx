@@ -11,7 +11,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
-  const { activeContext, activeOrg } = useApp();
+  const { activeContext, activeOrg, loading } = useApp();
   const [addOpen, setAddOpen] = useState(false);
   const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
@@ -28,6 +28,21 @@ const Index = () => {
         ? `${activeOrg.name}`
         : "Organisation Dashboard";
 
+  // Show loading screen while fetching data
+  if (loading) {
+    return (
+      <div className="flex min-h-screen w-full">
+        <AppSidebar onAddClick={() => setAddOpen(true)} />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading your data...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen w-full">
       <AppSidebar onAddClick={() => setAddOpen(true)} />
@@ -37,7 +52,9 @@ const Index = () => {
           <div>
             <h1 className="text-base font-semibold">{title}</h1>
             {activeContext === "organisation" && activeOrg?.kvkNumber && (
-              <p className="text-[11px] text-muted-foreground">KVK: {activeOrg.kvkNumber}</p>
+              <p className="text-[11px] text-muted-foreground">
+                KVK: {activeOrg.kvkNumber}
+              </p>
             )}
           </div>
           <Button

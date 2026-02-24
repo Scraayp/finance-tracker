@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import {
   Dialog,
@@ -29,18 +29,29 @@ interface Props {
   onOpenChange: (open: boolean) => void;
 }
 
+const DEFAULT_FORM_STATE = {
+  name: "",
+  publisher: "",
+  cost: "",
+  currency: "EUR",
+  billingCycle: "monthly" as BillingCycle,
+  category: "other" as SubscriptionCategory,
+  nextBillingDate: "",
+  notes: "",
+};
+
 export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
   const { activeContext, activeOrgId, addSubscription } = useApp();
-  const [form, setForm] = useState({
-    name: "",
-    publisher: "",
-    cost: "",
-    currency: "EUR",
-    billingCycle: "monthly" as BillingCycle,
-    category: "other" as SubscriptionCategory,
-    nextBillingDate: "",
-    notes: "",
-  });
+  const [form, setForm] = useState(DEFAULT_FORM_STATE);
+
+  const resetForm = () => {
+    setForm(DEFAULT_FORM_STATE);
+  };
+
+  const handleCancel = () => {
+    resetForm();
+    onOpenChange(false);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,23 +65,15 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
       billingCycle: form.billingCycle,
       category: form.category,
       context: activeContext,
-      organisationId: activeContext === "organisation" ? activeOrgId || undefined : undefined,
+      organisationId:
+        activeContext === "organisation" ? activeOrgId || undefined : undefined,
       nextBillingDate: form.nextBillingDate,
       startDate: new Date().toISOString().split("T")[0],
       notes: form.notes || undefined,
       isActive: true,
     });
 
-    setForm({
-      name: "",
-      publisher: "",
-      cost: "",
-      currency: "EUR",
-      billingCycle: "monthly",
-      category: "other",
-      nextBillingDate: "",
-      notes: "",
-    });
+    resetForm();
     onOpenChange(false);
   };
 
@@ -84,23 +87,53 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Name *</Label>
-              <Input id="name" placeholder="e.g. Netflix" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} required />
+              <Input
+                id="name"
+                placeholder="e.g. Netflix"
+                value={form.name}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, name: e.target.value }))
+                }
+                required
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="publisher">Publisher</Label>
-              <Input id="publisher" placeholder="e.g. Netflix Inc." value={form.publisher} onChange={(e) => setForm((p) => ({ ...p, publisher: e.target.value }))} />
+              <Input
+                id="publisher"
+                placeholder="e.g. Netflix Inc."
+                value={form.publisher}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, publisher: e.target.value }))
+                }
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="cost">Cost *</Label>
-              <Input id="cost" type="number" step="0.01" placeholder="9.99" value={form.cost} onChange={(e) => setForm((p) => ({ ...p, cost: e.target.value }))} required />
+              <Input
+                id="cost"
+                type="number"
+                step="0.01"
+                placeholder="9.99"
+                value={form.cost}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, cost: e.target.value }))
+                }
+                required
+              />
             </div>
             <div className="space-y-2">
               <Label>Currency</Label>
-              <Select value={form.currency} onValueChange={(v) => setForm((p) => ({ ...p, currency: v }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+              <Select
+                value={form.currency}
+                onValueChange={(v) => setForm((p) => ({ ...p, currency: v }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="EUR">EUR €</SelectItem>
                   <SelectItem value="USD">USD $</SelectItem>
@@ -110,11 +143,20 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
             </div>
             <div className="space-y-2">
               <Label>Billing Cycle *</Label>
-              <Select value={form.billingCycle} onValueChange={(v) => setForm((p) => ({ ...p, billingCycle: v as BillingCycle }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+              <Select
+                value={form.billingCycle}
+                onValueChange={(v) =>
+                  setForm((p) => ({ ...p, billingCycle: v as BillingCycle }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {Object.entries(billingCycleLabels).map(([k, l]) => (
-                    <SelectItem key={k} value={k}>{l}</SelectItem>
+                    <SelectItem key={k} value={k}>
+                      {l}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -124,29 +166,64 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Category</Label>
-              <Select value={form.category} onValueChange={(v) => setForm((p) => ({ ...p, category: v as SubscriptionCategory }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+              <Select
+                value={form.category}
+                onValueChange={(v) =>
+                  setForm((p) => ({
+                    ...p,
+                    category: v as SubscriptionCategory,
+                  }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {Object.entries(categoryLabels).map(([k, l]) => (
-                    <SelectItem key={k} value={k}>{l}</SelectItem>
+                    <SelectItem key={k} value={k}>
+                      {l}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="nextBilling">Next Billing Date *</Label>
-              <Input id="nextBilling" type="date" value={form.nextBillingDate} onChange={(e) => setForm((p) => ({ ...p, nextBillingDate: e.target.value }))} required />
+              <Input
+                id="nextBilling"
+                type="date"
+                value={form.nextBillingDate}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, nextBillingDate: e.target.value }))
+                }
+                required
+              />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notes</Label>
-            <Textarea id="notes" placeholder="Optional notes..." value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} rows={2} />
+            <Textarea
+              id="notes"
+              placeholder="Optional notes..."
+              value={form.notes}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, notes: e.target.value }))
+              }
+              rows={2}
+            />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90 glow-sm">Add Subscription</Button>
+            <Button type="button" variant="outline" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 glow-sm"
+            >
+              Add Subscription
+            </Button>
           </div>
         </form>
       </DialogContent>
