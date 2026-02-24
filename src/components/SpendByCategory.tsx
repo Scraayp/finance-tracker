@@ -4,14 +4,14 @@ import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const COLORS = [
-  "hsl(152, 60%, 48%)",
-  "hsl(190, 70%, 45%)",
-  "hsl(38, 92%, 50%)",
-  "hsl(280, 50%, 55%)",
-  "hsl(0, 65%, 55%)",
-  "hsl(210, 60%, 50%)",
-  "hsl(340, 55%, 50%)",
-  "hsl(120, 40%, 50%)",
+  "hsl(152, 58%, 46%)",
+  "hsl(190, 65%, 42%)",
+  "hsl(38, 88%, 50%)",
+  "hsl(280, 45%, 52%)",
+  "hsl(0, 60%, 52%)",
+  "hsl(210, 55%, 48%)",
+  "hsl(340, 50%, 48%)",
+  "hsl(120, 35%, 48%)",
 ];
 
 export function SpendByCategory() {
@@ -34,22 +34,26 @@ export function SpendByCategory() {
 
   if (data.length === 0) return null;
 
+  const total = data.reduce((sum, d) => sum + d.value, 0);
+
   return (
-    <div className="stat-card animate-fade-in">
-      <h3 className="text-sm font-medium text-muted-foreground mb-4">Monthly Spend by Category</h3>
-      <div className="flex items-center gap-6">
-        <div className="h-40 w-40 shrink-0">
+    <div className="stat-card animate-fade-in h-full">
+      <h3 className="section-label mb-5">Spend by Category</h3>
+
+      <div className="flex flex-col items-center gap-5">
+        <div className="h-44 w-44 shrink-0 relative">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                innerRadius={35}
-                outerRadius={65}
-                paddingAngle={3}
+                innerRadius={42}
+                outerRadius={72}
+                paddingAngle={4}
                 dataKey="value"
                 strokeWidth={0}
+                cornerRadius={4}
               >
                 {data.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -58,29 +62,50 @@ export function SpendByCategory() {
               <Tooltip
                 formatter={(value: number) => `€${value.toFixed(2)}`}
                 contentStyle={{
-                  borderRadius: "8px",
-                  border: "1px solid hsl(160, 6%, 16%)",
-                  background: "hsl(160, 10%, 8%)",
-                  color: "hsl(0, 0%, 95%)",
+                  borderRadius: "12px",
+                  border: "1px solid hsl(150, 6%, 13%)",
+                  background: "hsl(150, 12%, 7%)",
+                  color: "hsl(0, 0%, 96%)",
                   fontSize: "12px",
+                  boxShadow: "0 8px 32px -8px rgba(0,0,0,0.5)",
                 }}
               />
             </PieChart>
           </ResponsiveContainer>
+          {/* Center label */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <span className="text-lg font-bold">€{total.toFixed(0)}</span>
+            <span className="text-[10px] text-muted-foreground">/month</span>
+          </div>
         </div>
-        <div className="flex-1 space-y-2">
-          {data.map((d, i) => (
-            <div key={d.name} className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2">
-                <div
-                  className="h-2.5 w-2.5 rounded-full shrink-0"
-                  style={{ backgroundColor: COLORS[i % COLORS.length] }}
-                />
-                <span className="text-muted-foreground">{d.name}</span>
+
+        <div className="w-full space-y-2.5">
+          {data.map((d, i) => {
+            const pct = total > 0 ? (d.value / total) * 100 : 0;
+            return (
+              <div key={d.name} className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="h-2 w-2 rounded-full shrink-0"
+                      style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                    />
+                    <span className="text-muted-foreground">{d.name}</span>
+                  </div>
+                  <span className="font-mono font-medium text-foreground">€{d.value.toFixed(2)}</span>
+                </div>
+                <div className="h-1 w-full rounded-full bg-muted/40 overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${pct}%`,
+                      backgroundColor: COLORS[i % COLORS.length],
+                    }}
+                  />
+                </div>
               </div>
-              <span className="font-mono font-medium">€{d.value.toFixed(2)}</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

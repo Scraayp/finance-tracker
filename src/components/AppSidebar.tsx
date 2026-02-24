@@ -1,7 +1,7 @@
 import { useApp } from "@/context/AppContext";
 import {
   User, Building2, LayoutDashboard, List, Plus,
-  ChevronLeft, ChevronRight, ChevronDown, Settings,
+  ChevronLeft, ChevronRight, ChevronDown,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -25,33 +25,31 @@ export function AppSidebar({ onAddClick }: Props) {
   return (
     <aside
       className={cn(
-        "flex flex-col bg-sidebar text-sidebar-foreground transition-all duration-200 shrink-0 border-r border-sidebar-border",
-        collapsed ? "w-16" : "w-64"
+        "flex flex-col bg-sidebar text-sidebar-foreground transition-all duration-300 shrink-0 border-r border-sidebar-border relative",
+        collapsed ? "w-[68px]" : "w-[260px]"
       )}
     >
       {/* Header */}
       <div className="flex h-14 items-center justify-between px-4">
         {!collapsed && (
-          <span className="text-lg font-bold gradient-text">SubTrackr</span>
+          <span className="text-lg font-bold gradient-text tracking-tight">SubTrackr</span>
         )}
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-sidebar-muted hover:text-sidebar-foreground hover:bg-sidebar-accent"
+          className="h-7 w-7 text-sidebar-muted hover:text-sidebar-foreground hover:bg-sidebar-accent rounded-lg"
           onClick={() => setCollapsed((p) => !p)}
         >
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {collapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
         </Button>
       </div>
 
-      <Separator className="bg-sidebar-border" />
+      <Separator className="bg-sidebar-border opacity-50" />
 
       {/* Context Switcher */}
-      <div className="px-3 pt-4 pb-2">
+      <div className="px-3 pt-5 pb-2">
         {!collapsed && (
-          <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-sidebar-muted">
-            Context
-          </p>
+          <p className="mb-2.5 px-2 section-label text-sidebar-muted">Context</p>
         )}
         <div className="space-y-1">
           <SidebarButton
@@ -77,9 +75,11 @@ export function AppSidebar({ onAddClick }: Props) {
           {!collapsed ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm glass-subtle hover:border-primary/30 transition-colors">
-                  <Building2 className="h-4 w-4 text-primary shrink-0" />
-                  <span className="flex-1 text-left truncate font-medium">
+                <button className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm glass-subtle hover:border-primary/30 transition-all duration-200">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+                    <Building2 className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  <span className="flex-1 text-left truncate font-medium text-sm">
                     {activeOrg?.name || "Select org"}
                   </span>
                   <ChevronDown className="h-3 w-3 text-sidebar-muted shrink-0" />
@@ -91,7 +91,7 @@ export function AppSidebar({ onAddClick }: Props) {
                     key={org.id}
                     onClick={() => setActiveOrgId(org.id)}
                     className={cn(
-                      "cursor-pointer",
+                      "cursor-pointer rounded-lg",
                       org.id === activeOrg?.id && "text-primary font-medium"
                     )}
                   >
@@ -111,7 +111,7 @@ export function AppSidebar({ onAddClick }: Props) {
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex w-full items-center justify-center rounded-lg p-2 glass-subtle hover:border-primary/30 transition-colors">
+                <button className="flex w-full items-center justify-center rounded-xl p-2 glass-subtle hover:border-primary/30 transition-all">
                   <Building2 className="h-4 w-4 text-primary" />
                 </button>
               </DropdownMenuTrigger>
@@ -121,7 +121,7 @@ export function AppSidebar({ onAddClick }: Props) {
                     key={org.id}
                     onClick={() => setActiveOrgId(org.id)}
                     className={cn(
-                      "cursor-pointer",
+                      "cursor-pointer rounded-lg",
                       org.id === activeOrg?.id && "text-primary font-medium"
                     )}
                   >
@@ -135,14 +135,12 @@ export function AppSidebar({ onAddClick }: Props) {
         </div>
       )}
 
-      <Separator className="mx-3 bg-sidebar-border" />
+      <Separator className="mx-3 bg-sidebar-border opacity-50" />
 
       {/* Navigation */}
-      <div className="px-3 pt-4 pb-2">
+      <div className="px-3 pt-5 pb-2">
         {!collapsed && (
-          <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-sidebar-muted">
-            Menu
-          </p>
+          <p className="mb-2.5 px-2 section-label text-sidebar-muted">Menu</p>
         )}
         <div className="space-y-1">
           <SidebarButton icon={LayoutDashboard} label="Dashboard" collapsed={collapsed} active />
@@ -151,11 +149,11 @@ export function AppSidebar({ onAddClick }: Props) {
       </div>
 
       {/* Add button */}
-      <div className="mt-auto px-3 pb-4">
+      <div className="mt-auto px-3 pb-5">
         <Button
           onClick={onAddClick}
           className={cn(
-            "w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-sm",
+            "w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-sm rounded-xl h-10 font-medium transition-all duration-200",
             collapsed && "px-0"
           )}
         >
@@ -184,9 +182,9 @@ function SidebarButton({
     <button
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+        "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all duration-200",
         active
-          ? "bg-sidebar-accent text-primary font-medium"
+          ? "bg-primary/10 text-primary font-medium shadow-sm"
           : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         collapsed && "justify-center px-0"
       )}
