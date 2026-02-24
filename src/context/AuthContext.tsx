@@ -54,10 +54,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const signUp = async (email: string, password: string, fullName?: string) => {
+    const redirectUrl =
+      import.meta.env.VITE_AUTH_REDIRECT_URL || `${window.location.origin}/`;
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: redirectUrl,
         data: {
           full_name: fullName,
         },
@@ -91,10 +95,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const signInWithGoogle = async () => {
+    const redirectUrl =
+      import.meta.env.VITE_AUTH_REDIRECT_URL || `${window.location.origin}/`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/`,
+        redirectTo: redirectUrl,
       },
     });
 
@@ -106,10 +113,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const signInWithDiscord = async () => {
+    const redirectUrl =
+      import.meta.env.VITE_AUTH_REDIRECT_URL || `${window.location.origin}/`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "discord",
       options: {
-        redirectTo: `${window.location.origin}/`,
+        redirectTo: redirectUrl,
       },
     });
 
@@ -130,8 +140,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const resetPassword = async (email: string) => {
+    const baseUrl =
+      import.meta.env.VITE_AUTH_REDIRECT_URL || `${window.location.origin}`;
+    const resetUrl = `${baseUrl}/reset-password`;
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: resetUrl,
     });
 
     if (error) {

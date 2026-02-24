@@ -9,6 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SetupRequired } from "@/components/SetupRequired";
 import Index from "./pages/Index";
 import { LoginPage } from "./pages/LoginPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => {
             <BrowserRouter>
               <Routes>
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route
                   path="/"
                   element={
