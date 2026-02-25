@@ -55,7 +55,13 @@ const Index = () => {
   if (loading) {
     return (
       <div className="flex min-h-screen w-full overflow-x-hidden">
-        <div className="hidden lg:block">
+        <div
+          className="hidden lg:block bg-sidebar"
+          style={{
+            backgroundImage:
+              "linear-gradient(180deg, hsl(var(--sidebar-background)) 0%, hsl(var(--sidebar-background)) 100%)",
+          }}
+        >
           <AppSidebar onAddClick={() => setChoiceOpen(true)} />
         </div>
         <main className="flex-1 flex items-center justify-center">
@@ -70,7 +76,13 @@ const Index = () => {
 
   return (
     <div className="flex min-h-screen w-full overflow-x-hidden">
-      <div className="hidden lg:block">
+      <div
+        className="hidden lg:block bg-sidebar"
+        style={{
+          backgroundImage:
+            "linear-gradient(180deg, hsl(var(--sidebar-background)) 0%, hsl(var(--sidebar-background)) 100%)",
+        }}
+      >
         <AppSidebar onAddClick={() => setChoiceOpen(true)} />
       </div>
 

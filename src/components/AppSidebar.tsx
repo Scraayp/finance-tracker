@@ -53,18 +53,14 @@ export function AppSidebar({ onAddClick, mobile = false, onNavigate }: Props) {
     <>
       <aside
         className={cn(
-          "flex flex-col bg-sidebar text-sidebar-foreground transition-all duration-300 border-r border-sidebar-border/45 relative",
+          "flex flex-col text-sidebar-foreground transition-all duration-300 border-r border-sidebar-border/45 relative",
           mobile
-            ? "h-full w-full border-r-0"
+            ? "h-full w-full border-r-0 bg-sidebar"
             : cn(
-                "shrink-0 h-screen sticky top-0 overflow-y-auto",
+                "shrink-0 h-screen sticky top-0 overflow-y-auto bg-transparent",
                 isCollapsed ? "w-[72px]" : "w-[280px]",
               ),
         )}
-        style={{
-          backgroundImage:
-            "linear-gradient(180deg, hsl(var(--sidebar-background)) 0%, hsl(var(--sidebar-background)) 100%)",
-        }}
       >
         {/* Header */}
         <div className="flex h-16 items-center justify-between px-4 border-b border-sidebar-border/35">
