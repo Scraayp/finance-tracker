@@ -4,20 +4,8 @@
 -- Enable UUID extension (if not already enabled)
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Drop existing policies first
-DROP POLICY IF EXISTS "Users can view their personal incomes" ON public.incomes;
-DROP POLICY IF EXISTS "Users can create personal incomes" ON public.incomes;
-DROP POLICY IF EXISTS "Users can update their incomes" ON public.incomes;
-DROP POLICY IF EXISTS "Users can delete their incomes" ON public.incomes;
-
--- Drop existing triggers
-DROP TRIGGER IF EXISTS update_incomes_updated_at ON public.incomes;
-
--- Drop existing table
-DROP TABLE IF EXISTS public.incomes CASCADE;
-
 -- Create incomes table
-CREATE TABLE public.incomes (
+CREATE TABLE IF NOT EXISTS public.incomes (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name TEXT NOT NULL,
   source TEXT NOT NULL,
@@ -37,64 +25,66 @@ CREATE TABLE public.incomes (
 );
 
 -- Create indexes
-CREATE INDEX idx_incomes_user_id ON public.incomes(user_id);
-CREATE INDEX idx_incomes_organization_id ON public.incomes(organization_id);
+CREATE INDEX IF NOT EXISTS idx_incomes_user_id ON public.incomes(user_id);
+CREATE INDEX IF NOT EXISTS idx_incomes_organization_id ON public.incomes(organization_id);
 
 -- Enable RLS
 ALTER TABLE public.incomes ENABLE ROW LEVEL SECURITY;
 
--- Helper function for checking organization membership
-CREATE OR REPLACE FUNCTION public.is_org_member(org_id UUID)
-RETURNS BOOLEAN AS $$
+-- Drop old policies if they exist
+DO $$ 
 BEGIN
-  RETURN EXISTS (
-    SELECT 1 FROM public.organization_members
-    WHERE organization_id = org_id
-    AND user_id = auth.uid()
-  );
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Helper function for checking admin status
-CREATE OR REPLACE FUNCTION public.is_org_admin(org_id UUID)
-RETURNS BOOLEAN AS $$
-BEGIN
-  RETURN EXISTS (
-    SELECT 1 FROM public.organization_members
-    WHERE organization_id = org_id
-    AND user_id = auth.uid()
-    AND role IN ('owner', 'admin')
-  );
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+  DROP POLICY IF EXISTS "Users can view their personal incomes" ON public.incomes;
+  DROP POLICY IF EXISTS "Users can create personal incomes" ON public.incomes;
+  DROP POLICY IF EXISTS "Users can update their incomes" ON public.incomes;
+  DROP POLICY IF EXISTS "Users can delete their incomes" ON public.incomes;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
 
 -- Incomes RLS policies
 CREATE POLICY "Users can view their personal incomes"
   ON public.incomes FOR SELECT
   USING (
     (context = 'personal' AND user_id = auth.uid()) OR
-    (context = 'organisation' AND is_org_member(organization_id))
+    (context = 'organisation' AND EXISTS (
+      SELECT 1 FROM public.organization_members
+      WHERE organization_id = incomes.organization_id
+      AND user_id = auth.uid()
+    ))
   );
 
 CREATE POLICY "Users can create personal incomes"
   ON public.incomes FOR INSERT
   WITH CHECK (
     (context = 'personal' AND user_id = auth.uid()) OR
-    (context = 'organisation' AND is_org_member(organization_id))
+    (context = 'organisation' AND EXISTS (
+      SELECT 1 FROM public.organization_members
+      WHERE organization_id = organization_id
+      AND user_id = auth.uid()
+    ))
   );
 
 CREATE POLICY "Users can update their incomes"
   ON public.incomes FOR UPDATE
   USING (
     (context = 'personal' AND user_id = auth.uid()) OR
-    (context = 'organisation' AND is_org_member(organization_id))
+    (context = 'organisation' AND EXISTS (
+      SELECT 1 FROM public.organization_members
+      WHERE organization_id = incomes.organization_id
+      AND user_id = auth.uid()
+    ))
   );
 
 CREATE POLICY "Users can delete their incomes"
   ON public.incomes FOR DELETE
   USING (
     (context = 'personal' AND user_id = auth.uid()) OR
-    (context = 'organisation' AND is_org_admin(organization_id))
+    (context = 'organisation' AND EXISTS (
+      SELECT 1 FROM public.organization_members
+      WHERE organization_id = incomes.organization_id
+      AND user_id = auth.uid()
+      AND role IN ('owner', 'admin')
+    ))
   );
 
 -- Function to update updated_at timestamp
@@ -107,6 +97,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger for updated_at
+DROP TRIGGER IF EXISTS update_incomes_updated_at ON public.incomes;
 CREATE TRIGGER update_incomes_updated_at
   BEFORE UPDATE ON public.incomes
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
