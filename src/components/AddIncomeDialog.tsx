@@ -191,7 +191,9 @@ export function AddIncomeDialog({ open, onOpenChange }: Props) {
                     {incomeCategoryLabels[cat] || cat}
                   </SelectItem>
                 ))}
-                <SelectItem key="custom-category-option" value="other">Custom Category...</SelectItem>
+                <SelectItem key="custom-category-option" value="other">
+                  Custom Category...
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
