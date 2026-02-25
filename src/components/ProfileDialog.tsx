@@ -23,8 +23,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Lock, Mail, Shield, Eye, EyeOff } from "lucide-react";
+import {
+  Lock,
+  Mail,
+  Shield,
+  Eye,
+  EyeOff,
+  Palette,
+  Sun,
+  Moon,
+  Monitor,
+} from "lucide-react";
 import { TwoFactorSetup } from "./TwoFactorSetup";
+import { useTheme } from "next-themes";
+import { accentOptions, useAppearance } from "@/context/AppearanceContext";
 
 interface Props {
   open: boolean;
@@ -33,6 +45,8 @@ interface Props {
 
 export function ProfileDialog({ open, onOpenChange }: Props) {
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const { accent, setAccent } = useAppearance();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -203,10 +217,11 @@ export function ProfileDialog({ open, onOpenChange }: Props) {
           </DialogHeader>
 
           <Tabs defaultValue="account" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
               <TabsTrigger value="2fa">2FA</TabsTrigger>
+              <TabsTrigger value="appearance">Appearance</TabsTrigger>
             </TabsList>
 
             {/* Account Tab */}
@@ -414,6 +429,87 @@ export function ProfileDialog({ open, onOpenChange }: Props) {
                   )}
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="appearance" className="space-y-4 pt-4">
+              <div className="space-y-4">
+                <div className="rounded-lg border border-border/50 bg-muted/30 p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Monitor className="h-5 w-5 text-primary mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium">Theme Mode</p>
+                      <p className="text-xs text-muted-foreground">
+                        Choose between light, dark, or follow your system
+                        setting.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button
+                      type="button"
+                      variant={theme === "light" ? "default" : "outline"}
+                      onClick={() => setTheme("light")}
+                      className="justify-start"
+                    >
+                      <Sun className="h-4 w-4 mr-2" />
+                      Light
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={theme === "dark" ? "default" : "outline"}
+                      onClick={() => setTheme("dark")}
+                      className="justify-start"
+                    >
+                      <Moon className="h-4 w-4 mr-2" />
+                      Dark
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={theme === "system" ? "default" : "outline"}
+                      onClick={() => setTheme("system")}
+                      className="justify-start"
+                    >
+                      <Monitor className="h-4 w-4 mr-2" />
+                      System
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-border/50 bg-muted/30 p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Palette className="h-5 w-5 text-primary mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium">Primary Color</p>
+                      <p className="text-xs text-muted-foreground">
+                        Pick the primary color used across buttons, highlights,
+                        and accents.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {accentOptions.map((option) => {
+                      const selected = accent === option.value;
+                      return (
+                        <Button
+                          key={option.value}
+                          type="button"
+                          variant="outline"
+                          onClick={() => setAccent(option.value)}
+                          className={
+                            selected ? "border-primary text-primary" : ""
+                          }
+                        >
+                          <span
+                            className="mr-2 h-3.5 w-3.5 rounded-full border border-white/40"
+                            style={{ backgroundColor: option.swatch }}
+                          />
+                          {option.label}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </DialogContent>

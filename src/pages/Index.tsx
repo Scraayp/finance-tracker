@@ -69,9 +69,9 @@ const Index = () => {
       <AppSidebar onAddClick={() => setChoiceOpen(true)} />
 
       <main className="flex-1 overflow-auto bg-grid">
-        <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-border/50 px-6 glass-strong">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border/40 px-6 glass-subtle">
           <div>
-            <h1 className="text-base font-semibold">{title}</h1>
+            <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
             {activeContext === "organisation" && activeOrg?.kvkNumber && (
               <p className="text-[11px] text-muted-foreground">
                 KVK: {activeOrg.kvkNumber}
@@ -88,11 +88,11 @@ const Index = () => {
           </Button>
         </header>
 
-        <div className="p-6 space-y-6 max-w-[1200px]">
+        <div className="mx-auto w-full max-w-[1280px] p-6 space-y-6">
           <StatsCards />
 
           <Tabs defaultValue="subscriptions" className="w-full">
-            <TabsList className="grid w-full max-w-md grid-cols-2 mb-4">
+            <TabsList className="grid w-full max-w-md grid-cols-2 mb-5 glass-subtle rounded-xl p-1.5">
               <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
               <TabsTrigger value="incomes">Incomes</TabsTrigger>
             </TabsList>

@@ -11,6 +11,8 @@ import Index from "./pages/Index";
 import { LoginPage } from "./pages/LoginPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
+import { ThemeProvider } from "next-themes";
+import { AppearanceProvider } from "@/context/AppearanceContext";
 
 const queryClient = new QueryClient();
 
@@ -31,43 +33,47 @@ const isSupabaseConfigured = () => {
 };
 
 const App = () => {
-  // Show setup page if Supabase isn't configured
-  if (!isSupabaseConfigured()) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Sonner />
-          <SetupRequired />
-        </TooltipProvider>
-      </QueryClientProvider>
-    );
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AuthProvider>
-          <AppProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/reset-password" element={<ResetPasswordPage />} />
-                <Route
-                  path="/"
-                  element={
-                    <ProtectedRoute>
-                      <Index />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </AppProvider>
-        </AuthProvider>
-      </TooltipProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <AppearanceProvider>
+          <TooltipProvider>
+            {/* Show setup page if Supabase isn't configured */}
+            {!isSupabaseConfigured() ? (
+              <>
+                <Toaster />
+                <Sonner />
+                <SetupRequired />
+              </>
+            ) : (
+              <AuthProvider>
+                <AppProvider>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter>
+                    <Routes>
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route
+                        path="/reset-password"
+                        element={<ResetPasswordPage />}
+                      />
+                      <Route
+                        path="/"
+                        element={
+                          <ProtectedRoute>
+                            <Index />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </BrowserRouter>
+                </AppProvider>
+              </AuthProvider>
+            )}
+          </TooltipProvider>
+        </AppearanceProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };

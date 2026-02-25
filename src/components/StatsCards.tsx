@@ -4,7 +4,6 @@ import {
   TrendingUp,
   CreditCard,
   CalendarClock,
-  AlertTriangle,
   TrendingDown,
 } from "lucide-react";
 import { useMemo } from "react";
@@ -59,22 +58,22 @@ export function StatsCards() {
       label: "Monthly Income",
       value: `€${stats.monthlyIncomes.toFixed(2)}`,
       icon: TrendingUp,
-      accent: "text-emerald-600",
-      iconBg: "bg-emerald-500/10",
+      accent: "text-success",
+      iconBg: "bg-success/15",
     },
     {
       label: "Monthly Expenses",
       value: `€${stats.monthlyExpenses.toFixed(2)}`,
       icon: TrendingDown,
-      accent: "text-red-600",
-      iconBg: "bg-red-500/10",
+      accent: "text-destructive",
+      iconBg: "bg-destructive/15",
     },
     {
       label: "Net Monthly",
       value: `€${stats.monthlyNet.toFixed(2)}`,
       icon: CreditCard,
-      accent: stats.monthlyNet >= 0 ? "text-primary" : "text-orange-600",
-      iconBg: stats.monthlyNet >= 0 ? "bg-primary/10" : "bg-orange-500/10",
+      accent: stats.monthlyNet >= 0 ? "text-primary" : "text-destructive",
+      iconBg: stats.monthlyNet >= 0 ? "bg-primary/15" : "bg-destructive/15",
     },
     {
       label: "Annual Projection",

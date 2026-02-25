@@ -15,7 +15,6 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,16 +50,16 @@ export function AppSidebar({ onAddClick }: Props) {
     <>
       <aside
         className={cn(
-          "flex flex-col bg-gradient-to-b from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground transition-all duration-300 shrink-0 border-r border-sidebar-border/50 relative shadow-lg",
+          "flex flex-col bg-sidebar/90 text-sidebar-foreground transition-all duration-300 shrink-0 border-r border-sidebar-border/45 relative backdrop-blur-2xl",
           collapsed ? "w-[72px]" : "w-[280px]",
         )}
         style={{
           backgroundImage:
-            "linear-gradient(180deg, hsl(var(--sidebar)) 0%, hsl(var(--sidebar)/.98) 100%)",
+            "linear-gradient(180deg, hsl(var(--sidebar-background) / 0.94) 0%, hsl(var(--sidebar-background) / 0.84) 100%)",
         }}
       >
         {/* Header */}
-        <div className="flex h-16 items-center justify-between px-4 border-b border-sidebar-border/30 backdrop-blur-sm">
+        <div className="flex h-16 items-center justify-between px-4 border-b border-sidebar-border/35">
           {!collapsed && (
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center overflow-hidden">
@@ -70,7 +69,7 @@ export function AppSidebar({ onAddClick }: Props) {
                   className="h-full w-full object-cover"
                 />
               </div>
-              <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-primary via-primary/90 to-primary/70 bg-clip-text text-transparent">
+              <span className="text-lg font-semibold tracking-tight text-foreground">
                 Finance Tracker
               </span>
             </div>
@@ -92,8 +91,8 @@ export function AppSidebar({ onAddClick }: Props) {
         {/* User Info */}
         {!collapsed && user && (
           <div className="px-4 pt-4 pb-3 border-b border-sidebar-border/20 space-y-2">
-            <div className="flex items-center gap-3 rounded-lg px-3 py-2.5 bg-sidebar-accent/40 backdrop-blur-sm border border-sidebar-border/30">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-primary/30 to-primary/10">
+            <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 bg-sidebar-accent/45 border border-sidebar-border/35">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/15">
                 <User className="h-3.5 w-3.5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
@@ -148,8 +147,8 @@ export function AppSidebar({ onAddClick }: Props) {
             {!collapsed ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm bg-sidebar-accent/50 hover:bg-sidebar-accent/70 border border-sidebar-border/30 hover:border-primary/40 transition-all duration-200 group">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-primary/30 to-primary/10 group-hover:from-primary/40 group-hover:to-primary/20 transition-all">
+                  <button className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm bg-sidebar-accent/50 hover:bg-sidebar-accent/65 border border-sidebar-border/35 hover:border-primary/40 transition-all duration-200 group">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/15 transition-all">
                       <Building2 className="h-3.5 w-3.5 text-primary" />
                     </div>
                     <span className="flex-1 text-left truncate font-medium text-sm text-sidebar-foreground group-hover:text-primary transition-colors">
@@ -205,7 +204,7 @@ export function AppSidebar({ onAddClick }: Props) {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex w-full items-center justify-center rounded-lg p-2.5 bg-sidebar-accent/50 hover:bg-sidebar-accent/70 border border-sidebar-border/30 hover:border-primary/40 transition-all">
+                  <button className="flex w-full items-center justify-center rounded-xl p-2.5 bg-sidebar-accent/50 hover:bg-sidebar-accent/70 border border-sidebar-border/35 hover:border-primary/40 transition-all">
                     <Building2 className="h-4 w-4 text-primary" />
                   </button>
                 </DropdownMenuTrigger>
@@ -255,7 +254,7 @@ export function AppSidebar({ onAddClick }: Props) {
           <Button
             onClick={onAddClick}
             className={cn(
-              "w-full bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary/80 rounded-lg h-10 font-medium transition-all duration-200 shadow-lg hover:shadow-xl",
+              "w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-10 font-medium transition-all duration-200",
               collapsed && "px-0",
             )}
           >
@@ -265,7 +264,7 @@ export function AppSidebar({ onAddClick }: Props) {
         </div>
 
         {/* Logout button */}
-        <div className="px-4 pb-4 border-t border-sidebar-border/20 pt-3">
+        <div className="px-4 pb-4 border-t border-sidebar-border/20 pt-3 flex flex-col gap-2">
           <Button
             onClick={signOut}
             variant="ghost"
@@ -316,13 +315,13 @@ function SidebarButton({
       className={cn(
         "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 relative group",
         active
-          ? "bg-gradient-to-r from-primary/20 to-primary/10 text-primary shadow-sm border border-primary/30"
+          ? "bg-primary/15 text-primary border border-primary/35"
           : "text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-foreground border border-transparent hover:border-sidebar-border/40",
         collapsed && "justify-center px-0 py-2.5",
       )}
     >
       {active && !collapsed && (
-        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary to-primary/50 rounded-r transition-all" />
+        <div className="absolute inset-y-0 left-0 w-1 bg-primary rounded-r transition-all" />
       )}
       <Icon
         className={cn(

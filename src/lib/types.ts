@@ -94,12 +94,12 @@ export const incomeFrequencyLabels: Record<IncomeFrequency, string> = {
 };
 
 export const incomeFrequencyMultiplier: Record<IncomeFrequency, number> = {
-  daily: 365,
-  weekly: 52,
-  monthly: 12,
-  quarterly: 4,
-  "semi-annual": 2,
-  annual: 1,
+  daily: 365 / 12,
+  weekly: 52 / 12,
+  monthly: 1,
+  quarterly: 3,
+  "semi-annual": 6,
+  annual: 12,
   "one-time": 0,
 };
 
