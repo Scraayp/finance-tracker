@@ -18,9 +18,10 @@ import { Search } from "lucide-react";
 
 interface Props {
   onSelect?: (sub: Subscription) => void;
+  onEdit?: (sub: Subscription) => void;
 }
 
-export function SubscriptionList({ onSelect }: Props) {
+export function SubscriptionList({ onSelect, onEdit }: Props) {
   const { filtered } = useApp();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -86,7 +87,11 @@ export function SubscriptionList({ onSelect }: Props) {
                 animationFillMode: "both",
               }}
             >
-              <SubscriptionRow subscription={s} onSelect={onSelect} />
+              <SubscriptionRow
+                subscription={s}
+                onSelect={onSelect}
+                onEdit={onEdit}
+              />
             </div>
           ))
         )}

@@ -8,16 +8,17 @@ import { getSubscriptionIcon } from "@/lib/icons";
 import { getLogoUrl } from "@/lib/logos";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, ChevronRight } from "lucide-react";
+import { Trash2, ChevronRight, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/context/AppContext";
 
 interface Props {
   subscription: Subscription;
   onSelect?: (sub: Subscription) => void;
+  onEdit?: (sub: Subscription) => void;
 }
 
-export function SubscriptionRow({ subscription: s, onSelect }: Props) {
+export function SubscriptionRow({ subscription: s, onSelect, onEdit }: Props) {
   const { removeSubscription } = useApp();
   const { icon: Icon, bg, fg } = getSubscriptionIcon(s.name, s.category);
   const logoUrl = getLogoUrl(s.name, s.publisher);
@@ -76,6 +77,18 @@ export function SubscriptionRow({ subscription: s, onSelect }: Props) {
           {s.cost.toFixed(2)}
         </span>
       </div>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-7 w-7 shrink-0 text-muted-foreground/40 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={(e) => {
+          e.stopPropagation();
+          onEdit?.(s);
+        }}
+      >
+        <Pencil className="h-3.5 w-3.5" />
+      </Button>
 
       <Button
         variant="ghost"

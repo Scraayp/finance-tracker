@@ -6,16 +6,17 @@ import {
 } from "@/lib/types";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, ChevronRight, DollarSign } from "lucide-react";
+import { Trash2, ChevronRight, Pencil, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/context/AppContext";
 
 interface Props {
   income: Income;
   onSelect?: (income: Income) => void;
+  onEdit?: (income: Income) => void;
 }
 
-export function IncomeRow({ income: i, onSelect }: Props) {
+export function IncomeRow({ income: i, onSelect, onEdit }: Props) {
   const { removeIncome } = useApp();
 
   const getCategoryColor = (category: typeof i.category) => {
@@ -76,6 +77,18 @@ export function IncomeRow({ income: i, onSelect }: Props) {
           {i.amount.toFixed(2)}
         </span>
       </div>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-7 w-7 shrink-0 text-muted-foreground/40 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={(e) => {
+          e.stopPropagation();
+          onEdit?.(i);
+        }}
+      >
+        <Pencil className="h-3.5 w-3.5" />
+      </Button>
 
       <Button
         variant="ghost"

@@ -7,6 +7,8 @@ import { SpendByCategory } from "@/components/SpendByCategory";
 import { SubscriptionDetail } from "@/components/SubscriptionDetail";
 import { AddSubscriptionDialog } from "@/components/AddSubscriptionDialog";
 import { AddIncomeDialog } from "@/components/AddIncomeDialog";
+import { EditSubscriptionDialog } from "@/components/EditSubscriptionDialog";
+import { EditIncomeDialog } from "@/components/EditIncomeDialog";
 import { AddChoiceDialog } from "@/components/AddChoiceDialog";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Subscription, Income } from "@/lib/types";
@@ -19,12 +21,25 @@ const Index = () => {
   const [choiceOpen, setChoiceOpen] = useState(false);
   const [addSubOpen, setAddSubOpen] = useState(false);
   const [addIncomeOpen, setAddIncomeOpen] = useState(false);
+  const [editSubOpen, setEditSubOpen] = useState(false);
+  const [editIncomeOpen, setEditIncomeOpen] = useState(false);
   const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
+  const [selectedIncome, setSelectedIncome] = useState<Income | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
   const handleSelect = (sub: Subscription) => {
     setSelectedSub(sub);
     setDetailOpen(true);
+  };
+
+  const handleEditSub = (sub: Subscription) => {
+    setSelectedSub(sub);
+    setEditSubOpen(true);
+  };
+
+  const handleEditIncome = (income: Income) => {
+    setSelectedIncome(income);
+    setEditIncomeOpen(true);
   };
 
   const title =
@@ -86,7 +101,10 @@ const Index = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
                   <h2 className="section-label mb-3">Subscriptions</h2>
-                  <SubscriptionList onSelect={handleSelect} />
+                  <SubscriptionList
+                    onSelect={handleSelect}
+                    onEdit={handleEditSub}
+                  />
                 </div>
                 <div>
                   <SpendByCategory />
@@ -98,7 +116,7 @@ const Index = () => {
               <div className="grid grid-cols-1 gap-6">
                 <div>
                   <h2 className="section-label mb-3">Incomes</h2>
-                  <IncomeList />
+                  <IncomeList onEdit={handleEditIncome} />
                 </div>
               </div>
             </TabsContent>
@@ -114,6 +132,16 @@ const Index = () => {
       />
       <AddSubscriptionDialog open={addSubOpen} onOpenChange={setAddSubOpen} />
       <AddIncomeDialog open={addIncomeOpen} onOpenChange={setAddIncomeOpen} />
+      <EditSubscriptionDialog
+        open={editSubOpen}
+        onOpenChange={setEditSubOpen}
+        subscription={selectedSub}
+      />
+      <EditIncomeDialog
+        open={editIncomeOpen}
+        onOpenChange={setEditIncomeOpen}
+        income={selectedIncome}
+      />
       <SubscriptionDetail
         subscription={selectedSub}
         open={detailOpen}

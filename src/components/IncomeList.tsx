@@ -18,9 +18,10 @@ import { Search } from "lucide-react";
 
 interface Props {
   onSelect?: (income: Income) => void;
+  onEdit?: (income: Income) => void;
 }
 
-export function IncomeList({ onSelect }: Props) {
+export function IncomeList({ onSelect, onEdit }: Props) {
   const { filteredIncomes } = useApp();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -86,7 +87,7 @@ export function IncomeList({ onSelect }: Props) {
                 animationFillMode: "both",
               }}
             >
-              <IncomeRow income={i} onSelect={onSelect} />
+              <IncomeRow income={i} onSelect={onSelect} onEdit={onEdit} />
             </div>
           ))
         )}
