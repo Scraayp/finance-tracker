@@ -26,7 +26,7 @@ export function SubscriptionRow({ subscription: s, onSelect, onEdit }: Props) {
 
   return (
     <div
-      className="subscription-row animate-slide-up cursor-pointer group"
+      className="subscription-row animate-slide-up cursor-pointer group flex-wrap sm:flex-nowrap gap-3 sm:gap-4"
       onClick={() => onSelect?.(s)}
     >
       {/* Logo / Icon Badge */}
@@ -71,7 +71,7 @@ export function SubscriptionRow({ subscription: s, onSelect, onEdit }: Props) {
         {getCategoryLabel(s.category)}
       </Badge>
 
-      <div className="text-right shrink-0 ml-2">
+      <div className="text-left sm:text-right shrink-0 ml-12 sm:ml-2 w-full sm:w-auto order-3 sm:order-none">
         <span className="font-semibold font-mono text-sm">
           {s.currency === "EUR" ? "€" : "$"}
           {s.cost.toFixed(2)}
@@ -81,7 +81,7 @@ export function SubscriptionRow({ subscription: s, onSelect, onEdit }: Props) {
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 shrink-0 text-muted-foreground/40 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+        className="h-7 w-7 shrink-0 text-muted-foreground/50 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-primary/15 hover:text-primary"
         onClick={(e) => {
           e.stopPropagation();
           onEdit?.(s);
@@ -93,7 +93,7 @@ export function SubscriptionRow({ subscription: s, onSelect, onEdit }: Props) {
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 shrink-0 text-muted-foreground/40 hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+        className="h-7 w-7 shrink-0 text-muted-foreground/40 hover:text-destructive opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
         onClick={(e) => {
           e.stopPropagation();
           removeSubscription(s.id);
@@ -102,7 +102,7 @@ export function SubscriptionRow({ subscription: s, onSelect, onEdit }: Props) {
         <Trash2 className="h-3.5 w-3.5" />
       </Button>
 
-      <ChevronRight className="h-4 w-4 text-muted-foreground/20 group-hover:text-muted-foreground/50 transition-colors shrink-0" />
+      <ChevronRight className="hidden sm:block h-4 w-4 text-muted-foreground/20 group-hover:text-muted-foreground/50 transition-colors shrink-0" />
     </div>
   );
 }

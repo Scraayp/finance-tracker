@@ -57,7 +57,7 @@
   }
 
   .dark {
-    --background: 150 12% 5%;
+    --background: 150 12% 3%;
     --foreground: 0 0% 96%;
 
     --card: var(--background);
@@ -69,10 +69,10 @@
     --primary: 152 58% 46%;
     --primary-foreground: 150 12% 5%;
 
-    --secondary: 150 8% 12%;
+    --secondary: 150 8% 8%;
     --secondary-foreground: 0 0% 88%;
 
-    --muted: 150 6% 14%;
+    --muted: 150 6% 10%;
     --muted-foreground: 150 5% 50%;
 
     --accent: 152 58% 46%;
@@ -87,22 +87,22 @@
     --success: 152 58% 46%;
     --success-foreground: 150 12% 5%;
 
-    --border: 150 6% 13%;
-    --input: 150 6% 13%;
+    --border: 150 6% 9%;
+    --input: 150 6% 9%;
     --ring: 152 58% 46%;
 
-    --sidebar-background: 150 14% 4%;
+    --sidebar-background: 150 14% 3%;
     --sidebar-foreground: 0 0% 80%;
     --sidebar-primary: 152 58% 46%;
     --sidebar-primary-foreground: 150 12% 5%;
-    --sidebar-accent: 150 10% 10%;
+    --sidebar-accent: 150 10% 7%;
     --sidebar-accent-foreground: 0 0% 88%;
-    --sidebar-border: 150 6% 10%;
+    --sidebar-border: 150 6% 7%;
     --sidebar-ring: 152 58% 46%;
     --sidebar-muted: 150 5% 40%;
 
-    --glass-bg: 150 12% 8%;
-    --glass-border: 152 18% 18%;
+    --glass-bg: 150 12% 5%;
+    --glass-border: 152 18% 12%;
   }
 
   :root[data-accent="green"] {
@@ -124,21 +124,21 @@
   }
 
   .dark:root[data-accent="green"] {
-    --background: 150 12% 5%;
+    --background: 150 12% 3%;
     --primary: 152 58% 46%;
     --accent: 152 58% 46%;
-    --secondary: 150 8% 12%;
-    --muted: 150 6% 14%;
-    --border: 150 6% 13%;
-    --input: 150 6% 13%;
+    --secondary: 150 8% 8%;
+    --muted: 150 6% 10%;
+    --border: 150 6% 9%;
+    --input: 150 6% 9%;
     --ring: 152 58% 46%;
     --success: 152 58% 46%;
-    --sidebar-background: 150 14% 4%;
+    --sidebar-background: 150 14% 3%;
     --sidebar-primary: 152 58% 46%;
-    --sidebar-accent: 150 10% 10%;
-    --sidebar-border: 150 6% 10%;
-    --glass-bg: 150 12% 8%;
-    --glass-border: 152 18% 18%;
+    --sidebar-accent: 150 10% 7%;
+    --sidebar-border: 150 6% 7%;
+    --glass-bg: 150 12% 5%;
+    --glass-border: 152 18% 12%;
   }
 
   :root[data-accent="blue"] {
@@ -160,21 +160,21 @@
   }
 
   .dark:root[data-accent="blue"] {
-    --background: 220 12% 5%;
+    --background: 220 12% 3%;
     --primary: 217 91% 60%;
     --accent: 217 91% 60%;
-    --secondary: 220 8% 12%;
-    --muted: 220 6% 14%;
-    --border: 220 6% 13%;
-    --input: 220 6% 13%;
+    --secondary: 220 8% 8%;
+    --muted: 220 6% 10%;
+    --border: 220 6% 9%;
+    --input: 220 6% 9%;
     --ring: 217 91% 60%;
     --success: 217 91% 60%;
-    --sidebar-background: 220 14% 4%;
+    --sidebar-background: 220 14% 3%;
     --sidebar-primary: 217 91% 60%;
-    --sidebar-accent: 220 10% 10%;
-    --sidebar-border: 220 6% 10%;
-    --glass-bg: 220 12% 8%;
-    --glass-border: 220 18% 18%;
+    --sidebar-accent: 220 10% 7%;
+    --sidebar-border: 220 6% 7%;
+    --glass-bg: 220 12% 5%;
+    --glass-border: 220 18% 12%;
   }
 
   :root[data-accent="red"] {
@@ -196,21 +196,21 @@
   }
 
   .dark:root[data-accent="red"] {
-    --background: 0 12% 5%;
+    --background: 0 12% 3%;
     --primary: 0 84% 60%;
     --accent: 0 84% 60%;
-    --secondary: 0 8% 12%;
-    --muted: 0 6% 14%;
-    --border: 0 6% 13%;
-    --input: 0 6% 13%;
+    --secondary: 0 8% 8%;
+    --muted: 0 6% 10%;
+    --border: 0 6% 9%;
+    --input: 0 6% 9%;
     --ring: 0 84% 60%;
     --success: 0 84% 60%;
-    --sidebar-background: 0 14% 4%;
+    --sidebar-background: 0 14% 3%;
     --sidebar-primary: 0 84% 60%;
-    --sidebar-accent: 0 10% 10%;
-    --sidebar-border: 0 6% 10%;
-    --glass-bg: 0 12% 8%;
-    --glass-border: 0 18% 18%;
+    --sidebar-accent: 0 10% 7%;
+    --sidebar-border: 0 6% 7%;
+    --glass-bg: 0 12% 5%;
+    --glass-border: 0 18% 12%;
   }
 
   :root[data-accent="yellow"] {
@@ -235,21 +235,21 @@
   }
 
   .dark:root[data-accent="yellow"] {
-    --background: 45 12% 5%;
+    --background: 45 12% 3%;
     --primary: 45 93% 58%;
     --accent: 45 93% 58%;
-    --secondary: 45 8% 12%;
-    --muted: 45 6% 14%;
-    --border: 45 6% 13%;
-    --input: 45 6% 13%;
+    --secondary: 45 8% 8%;
+    --muted: 45 6% 10%;
+    --border: 45 6% 9%;
+    --input: 45 6% 9%;
     --ring: 45 93% 58%;
     --success: 45 93% 58%;
-    --sidebar-background: 45 14% 4%;
+    --sidebar-background: 45 14% 3%;
     --sidebar-primary: 45 93% 58%;
-    --sidebar-accent: 45 10% 10%;
-    --sidebar-border: 45 6% 10%;
-    --glass-bg: 45 12% 8%;
-    --glass-border: 45 18% 18%;
+    --sidebar-accent: 45 10% 7%;
+    --sidebar-border: 45 6% 7%;
+    --glass-bg: 45 12% 5%;
+    --glass-border: 45 18% 12%;
     --primary-foreground: 0 0% 8%;
     --accent-foreground: 0 0% 8%;
     --success-foreground: 0 0% 8%;
@@ -274,21 +274,21 @@
   }
 
   .dark:root[data-accent="purple"] {
-    --background: 263 12% 5%;
+    --background: 263 12% 3%;
     --primary: 263 70% 60%;
     --accent: 263 70% 60%;
-    --secondary: 263 8% 12%;
-    --muted: 263 6% 14%;
-    --border: 263 6% 13%;
-    --input: 263 6% 13%;
+    --secondary: 263 8% 8%;
+    --muted: 263 6% 10%;
+    --border: 263 6% 9%;
+    --input: 263 6% 9%;
     --ring: 263 70% 60%;
     --success: 263 70% 60%;
-    --sidebar-background: 263 14% 4%;
+    --sidebar-background: 263 14% 3%;
     --sidebar-primary: 263 70% 60%;
-    --sidebar-accent: 263 10% 10%;
-    --sidebar-border: 263 6% 10%;
-    --glass-bg: 263 12% 8%;
-    --glass-border: 263 18% 18%;
+    --sidebar-accent: 263 10% 7%;
+    --sidebar-border: 263 6% 7%;
+    --glass-bg: 263 12% 5%;
+    --glass-border: 263 18% 12%;
   }
 
   :root[data-accent="pink"] {
@@ -310,21 +310,21 @@
   }
 
   .dark:root[data-accent="pink"] {
-    --background: 330 12% 5%;
+    --background: 330 12% 3%;
     --primary: 330 81% 60%;
     --accent: 330 81% 60%;
-    --secondary: 330 8% 12%;
-    --muted: 330 6% 14%;
-    --border: 330 6% 13%;
-    --input: 330 6% 13%;
+    --secondary: 330 8% 8%;
+    --muted: 330 6% 10%;
+    --border: 330 6% 9%;
+    --input: 330 6% 9%;
     --ring: 330 81% 60%;
     --success: 330 81% 60%;
-    --sidebar-background: 330 14% 4%;
+    --sidebar-background: 330 14% 3%;
     --sidebar-primary: 330 81% 60%;
-    --sidebar-accent: 330 10% 10%;
-    --sidebar-border: 330 6% 10%;
-    --glass-bg: 330 12% 8%;
-    --glass-border: 330 18% 18%;
+    --sidebar-accent: 330 10% 7%;
+    --sidebar-border: 330 6% 7%;
+    --glass-bg: 330 12% 5%;
+    --glass-border: 330 18% 12%;
   }
 }
 
@@ -492,11 +492,20 @@
   }
 
   .bg-grid {
+    background-color: hsl(var(--background));
     background-image: radial-gradient(
       hsl(var(--border) / 0.55) 1px,
       transparent 1px
     );
     background-size: 32px 32px;
+  }
+
+  .dark .bg-grid {
+    background-color: hsl(var(--background));
+    background-image: radial-gradient(
+      hsl(var(--border) / 0.38) 1px,
+      transparent 1px
+    );
   }
 
   .section-label {

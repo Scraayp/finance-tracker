@@ -28,9 +28,11 @@ import { ProfileDialog } from "./ProfileDialog";
 
 interface Props {
   onAddClick: () => void;
+  mobile?: boolean;
+  onNavigate?: () => void;
 }
 
-export function AppSidebar({ onAddClick }: Props) {
+export function AppSidebar({ onAddClick, mobile = false, onNavigate }: Props) {
   const {
     activeContext,
     setActiveContext,
@@ -45,22 +47,28 @@ export function AppSidebar({ onAddClick }: Props) {
   const [showOrgSettings, setShowOrgSettings] = useState(false);
   const [showCreateOrg, setShowCreateOrg] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const isCollapsed = mobile ? false : collapsed;
 
   return (
     <>
       <aside
         className={cn(
-          "flex flex-col bg-sidebar/90 text-sidebar-foreground transition-all duration-300 shrink-0 border-r border-sidebar-border/45 relative backdrop-blur-2xl",
-          collapsed ? "w-[72px]" : "w-[280px]",
+          "flex flex-col bg-sidebar text-sidebar-foreground transition-all duration-300 border-r border-sidebar-border/45 relative",
+          mobile
+            ? "h-full w-full border-r-0"
+            : cn(
+                "shrink-0 h-screen sticky top-0 overflow-y-auto",
+                isCollapsed ? "w-[72px]" : "w-[280px]",
+              ),
         )}
         style={{
           backgroundImage:
-            "linear-gradient(180deg, hsl(var(--sidebar-background) / 0.94) 0%, hsl(var(--sidebar-background) / 0.84) 100%)",
+            "linear-gradient(180deg, hsl(var(--sidebar-background)) 0%, hsl(var(--sidebar-background)) 100%)",
         }}
       >
         {/* Header */}
         <div className="flex h-16 items-center justify-between px-4 border-b border-sidebar-border/35">
-          {!collapsed && (
+          {!isCollapsed && (
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center overflow-hidden">
                 <img
@@ -74,22 +82,24 @@ export function AppSidebar({ onAddClick }: Props) {
               </span>
             </div>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-sidebar-muted hover:text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-lg transition-all"
-            onClick={() => setCollapsed((p) => !p)}
-          >
-            {collapsed ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
-              <ChevronLeft className="h-4 w-4" />
-            )}
-          </Button>
+          {!mobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-sidebar-muted hover:text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-lg transition-all"
+              onClick={() => setCollapsed((p) => !p)}
+            >
+              {isCollapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
+            </Button>
+          )}
         </div>
 
         {/* User Info */}
-        {!collapsed && user && (
+        {!isCollapsed && user && (
           <div className="px-4 pt-4 pb-3 border-b border-sidebar-border/20 space-y-2">
             <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 bg-sidebar-accent/45 border border-sidebar-border/35">
               <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/15">
@@ -105,7 +115,10 @@ export function AppSidebar({ onAddClick }: Props) {
               </div>
             </div>
             <Button
-              onClick={() => setShowProfile(true)}
+              onClick={() => {
+                setShowProfile(true);
+                onNavigate?.();
+              }}
               variant="outline"
               size="sm"
               className="w-full"
@@ -118,7 +131,7 @@ export function AppSidebar({ onAddClick }: Props) {
 
         {/* Context Switcher */}
         <div className="px-4 pt-5 pb-3">
-          {!collapsed && (
+          {!isCollapsed && (
             <p className="mb-3 px-3 text-xs font-semibold text-sidebar-muted uppercase tracking-wider">
               Workspace
             </p>
@@ -127,16 +140,22 @@ export function AppSidebar({ onAddClick }: Props) {
             <SidebarButton
               icon={User}
               label="Personal"
-              collapsed={collapsed}
+              collapsed={isCollapsed}
               active={activeContext === "personal"}
-              onClick={() => setActiveContext("personal")}
+              onClick={() => {
+                setActiveContext("personal");
+                onNavigate?.();
+              }}
             />
             <SidebarButton
               icon={Building2}
               label="Organization"
-              collapsed={collapsed}
+              collapsed={isCollapsed}
               active={activeContext === "organisation"}
-              onClick={() => setActiveContext("organisation")}
+              onClick={() => {
+                setActiveContext("organisation");
+                onNavigate?.();
+              }}
             />
           </div>
         </div>
@@ -144,7 +163,7 @@ export function AppSidebar({ onAddClick }: Props) {
         {/* Org Switcher */}
         {activeContext === "organisation" && (
           <div className="px-4 pb-4 border-b border-sidebar-border/20">
-            {!collapsed ? (
+            {!isCollapsed ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm bg-sidebar-accent/50 hover:bg-sidebar-accent/65 border border-sidebar-border/35 hover:border-primary/40 transition-all duration-200 group">
@@ -164,7 +183,10 @@ export function AppSidebar({ onAddClick }: Props) {
                   {organisations.map((org) => (
                     <DropdownMenuItem
                       key={org.id}
-                      onClick={() => setActiveOrgId(org.id)}
+                      onClick={() => {
+                        setActiveOrgId(org.id);
+                        onNavigate?.();
+                      }}
                       className={cn(
                         "cursor-pointer rounded-lg px-3 py-2 transition-all",
                         org.id === activeOrg?.id &&
@@ -184,7 +206,10 @@ export function AppSidebar({ onAddClick }: Props) {
                   ))}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => setShowCreateOrg(true)}
+                    onClick={() => {
+                      setShowCreateOrg(true);
+                      onNavigate?.();
+                    }}
                     className="cursor-pointer rounded-lg text-primary hover:bg-primary/10"
                   >
                     <PlusCircle className="h-4 w-4 mr-2 flex-shrink-0" />
@@ -192,7 +217,10 @@ export function AppSidebar({ onAddClick }: Props) {
                   </DropdownMenuItem>
                   {activeOrg && (
                     <DropdownMenuItem
-                      onClick={() => setShowOrgSettings(true)}
+                      onClick={() => {
+                        setShowOrgSettings(true);
+                        onNavigate?.();
+                      }}
                       className="cursor-pointer rounded-lg"
                     >
                       <Settings className="h-4 w-4 mr-2 flex-shrink-0" />
@@ -215,7 +243,10 @@ export function AppSidebar({ onAddClick }: Props) {
                   {organisations.map((org) => (
                     <DropdownMenuItem
                       key={org.id}
-                      onClick={() => setActiveOrgId(org.id)}
+                      onClick={() => {
+                        setActiveOrgId(org.id);
+                        onNavigate?.();
+                      }}
                       className={cn(
                         "cursor-pointer rounded-lg",
                         org.id === activeOrg?.id &&
@@ -228,7 +259,10 @@ export function AppSidebar({ onAddClick }: Props) {
                   ))}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => setShowCreateOrg(true)}
+                    onClick={() => {
+                      setShowCreateOrg(true);
+                      onNavigate?.();
+                    }}
                     className="cursor-pointer rounded-lg text-primary"
                   >
                     <PlusCircle className="h-4 w-4 mr-2" />
@@ -236,7 +270,10 @@ export function AppSidebar({ onAddClick }: Props) {
                   </DropdownMenuItem>
                   {activeOrg && (
                     <DropdownMenuItem
-                      onClick={() => setShowOrgSettings(true)}
+                      onClick={() => {
+                        setShowOrgSettings(true);
+                        onNavigate?.();
+                      }}
                       className="cursor-pointer rounded-lg"
                     >
                       <Settings className="h-4 w-4 mr-2" />
@@ -252,29 +289,35 @@ export function AppSidebar({ onAddClick }: Props) {
         {/* Add button */}
         <div className="px-4 pt-5 pb-3">
           <Button
-            onClick={onAddClick}
+            onClick={() => {
+              onAddClick();
+              onNavigate?.();
+            }}
             className={cn(
               "w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-10 font-medium transition-all duration-200",
-              collapsed && "px-0",
+              isCollapsed && "px-0",
             )}
           >
             <Plus className="h-4 w-4" />
-            {!collapsed && <span className="ml-2">Add Item</span>}
+            {!isCollapsed && <span className="ml-2">Add Item</span>}
           </Button>
         </div>
 
         {/* Logout button */}
         <div className="px-4 pb-4 border-t border-sidebar-border/20 pt-3 flex flex-col gap-2">
           <Button
-            onClick={signOut}
+            onClick={() => {
+              signOut();
+              onNavigate?.();
+            }}
             variant="ghost"
             className={cn(
               "w-full text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground rounded-lg h-10 transition-all border border-transparent hover:border-sidebar-border/50",
-              collapsed && "px-0",
+              isCollapsed && "px-0",
             )}
           >
             <LogOut className="h-4 w-4" />
-            {!collapsed && <span className="ml-2">Sign Out</span>}
+            {!isCollapsed && <span className="ml-2">Sign Out</span>}
           </Button>
         </div>
       </aside>

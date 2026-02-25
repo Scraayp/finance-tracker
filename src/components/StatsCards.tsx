@@ -7,9 +7,20 @@ import {
   TrendingDown,
 } from "lucide-react";
 import { useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 export function StatsCards() {
   const { filtered, filteredIncomes } = useApp();
+  const currencyFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: "EUR",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    [],
+  );
 
   const stats = useMemo(() => {
     // Expenses calculation
@@ -56,32 +67,42 @@ export function StatsCards() {
   const cards = [
     {
       label: "Monthly Income",
-      value: `€${stats.monthlyIncomes.toFixed(2)}`,
+      value: currencyFormatter.format(stats.monthlyIncomes),
+      helper: "Based on active income sources",
       icon: TrendingUp,
-      accent: "text-success",
-      iconBg: "bg-success/15",
+      valueClass: "text-foreground",
+      iconClass: "text-success",
+      iconBg: "bg-success/12",
     },
     {
       label: "Monthly Expenses",
-      value: `€${stats.monthlyExpenses.toFixed(2)}`,
+      value: currencyFormatter.format(stats.monthlyExpenses),
+      helper: "Based on active subscriptions",
       icon: TrendingDown,
-      accent: "text-destructive",
-      iconBg: "bg-destructive/15",
+      valueClass: "text-foreground",
+      iconClass: "text-destructive",
+      iconBg: "bg-destructive/12",
     },
     {
       label: "Net Monthly",
-      value: `€${stats.monthlyNet.toFixed(2)}`,
+      value: currencyFormatter.format(stats.monthlyNet),
+      helper:
+        stats.monthlyNet >= 0
+          ? "Positive monthly balance"
+          : "Negative monthly balance",
       icon: CreditCard,
-      accent: stats.monthlyNet >= 0 ? "text-primary" : "text-destructive",
-      iconBg: stats.monthlyNet >= 0 ? "bg-primary/15" : "bg-destructive/15",
+      valueClass: stats.monthlyNet >= 0 ? "text-success" : "text-destructive",
+      iconClass: stats.monthlyNet >= 0 ? "text-primary" : "text-destructive",
+      iconBg: stats.monthlyNet >= 0 ? "bg-primary/12" : "bg-destructive/12",
     },
     {
       label: "Annual Projection",
-      value: `€${stats.annualNet.toFixed(2)}`,
+      value: currencyFormatter.format(stats.annualNet),
+      helper: "12-month estimate from current data",
       icon: CalendarClock,
-      accent:
-        stats.annualNet >= 0 ? "text-foreground" : "text-muted-foreground",
-      iconBg: stats.annualNet >= 0 ? "bg-muted" : "bg-muted",
+      valueClass: "text-foreground",
+      iconClass: "text-muted-foreground",
+      iconBg: "bg-muted/70",
     },
   ];
 
@@ -93,19 +114,30 @@ export function StatsCards() {
           className="stat-card animate-fade-in"
           style={{ animationDelay: `${i * 60}ms`, animationFillMode: "both" }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              {c.label}
-            </span>
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                {c.label}
+              </span>
+              <p
+                className={cn(
+                  "mt-1 text-2xl sm:text-[1.75rem] font-semibold tracking-tight",
+                  c.valueClass,
+                )}
+              >
+                {c.value}
+              </p>
+            </div>
             <div
-              className={`flex h-8 w-8 items-center justify-center rounded-lg ${c.iconBg}`}
+              className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-lg",
+                c.iconBg,
+              )}
             >
-              <c.icon className={`h-4 w-4 ${c.accent}`} />
+              <c.icon className={cn("h-4 w-4", c.iconClass)} />
             </div>
           </div>
-          <p className={`text-3xl font-bold tracking-tight ${c.accent}`}>
-            {c.value}
-          </p>
+          <p className="text-xs text-muted-foreground">{c.helper}</p>
         </div>
       ))}
     </div>
