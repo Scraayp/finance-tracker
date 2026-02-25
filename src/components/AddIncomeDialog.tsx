@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import {
   Dialog,
@@ -18,11 +18,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  BillingCycle,
-  SubscriptionCategory,
-  billingCycleLabels,
-  categoryLabels,
-  defaultSubscriptionCategories,
+  IncomeFrequency,
+  IncomeCategory,
+  incomeFrequencyLabels,
+  incomeCategoryLabels,
+  defaultIncomeCategories,
 } from "@/lib/types";
 
 interface Props {
@@ -32,18 +32,18 @@ interface Props {
 
 const DEFAULT_FORM_STATE = {
   name: "",
-  publisher: "",
-  cost: "",
+  source: "",
+  amount: "",
   currency: "EUR",
-  billingCycle: "monthly" as BillingCycle,
-  category: "entertainment" as SubscriptionCategory,
+  frequency: "monthly" as IncomeFrequency,
+  category: "salary" as IncomeCategory,
   customCategory: "",
-  nextBillingDate: "",
+  nextReceiptDate: "",
   notes: "",
 };
 
-export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
-  const { activeContext, activeOrgId, addSubscription } = useApp();
+export function AddIncomeDialog({ open, onOpenChange }: Props) {
+  const { activeContext, activeOrgId, addIncome } = useApp();
   const [form, setForm] = useState(DEFAULT_FORM_STATE);
 
   const resetForm = () => {
@@ -57,24 +57,24 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.cost || !form.nextBillingDate) return;
+    if (!form.name || !form.amount || !form.nextReceiptDate) return;
 
     const finalCategory =
       form.category === "other" && form.customCategory
         ? form.customCategory
         : form.category;
 
-    addSubscription({
+    addIncome({
       name: form.name,
-      publisher: form.publisher,
-      cost: parseFloat(form.cost),
+      source: form.source,
+      amount: parseFloat(form.amount),
       currency: form.currency,
-      billingCycle: form.billingCycle,
+      frequency: form.frequency,
       category: finalCategory,
       context: activeContext,
       organisationId:
         activeContext === "organisation" ? activeOrgId || undefined : undefined,
-      nextBillingDate: form.nextBillingDate,
+      nextReceiptDate: form.nextReceiptDate,
       startDate: new Date().toISOString().split("T")[0],
       notes: form.notes || undefined,
       isActive: true,
@@ -88,7 +88,7 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg glass-strong border-border">
         <DialogHeader>
-          <DialogTitle>Add Subscription</DialogTitle>
+          <DialogTitle>Add Income</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -96,7 +96,7 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
               <Label htmlFor="name">Name *</Label>
               <Input
                 id="name"
-                placeholder="e.g. Netflix"
+                placeholder="e.g. Main Salary"
                 value={form.name}
                 onChange={(e) =>
                   setForm((p) => ({ ...p, name: e.target.value }))
@@ -105,13 +105,13 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="publisher">Publisher</Label>
+              <Label htmlFor="source">Source</Label>
               <Input
-                id="publisher"
-                placeholder="e.g. Netflix Inc."
-                value={form.publisher}
+                id="source"
+                placeholder="e.g. Employer Inc."
+                value={form.source}
                 onChange={(e) =>
-                  setForm((p) => ({ ...p, publisher: e.target.value }))
+                  setForm((p) => ({ ...p, source: e.target.value }))
                 }
               />
             </div>
@@ -119,15 +119,15 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
 
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="cost">Cost *</Label>
+              <Label htmlFor="amount">Amount *</Label>
               <Input
-                id="cost"
+                id="amount"
                 type="number"
                 step="0.01"
-                placeholder="9.99"
-                value={form.cost}
+                placeholder="2500.00"
+                value={form.amount}
                 onChange={(e) =>
-                  setForm((p) => ({ ...p, cost: e.target.value }))
+                  setForm((p) => ({ ...p, amount: e.target.value }))
                 }
                 required
               />
@@ -149,18 +149,18 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Billing Cycle *</Label>
+              <Label>Frequency *</Label>
               <Select
-                value={form.billingCycle}
+                value={form.frequency}
                 onValueChange={(v) =>
-                  setForm((p) => ({ ...p, billingCycle: v as BillingCycle }))
+                  setForm((p) => ({ ...p, frequency: v as IncomeFrequency }))
                 }
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(billingCycleLabels).map(([k, l]) => (
+                  {Object.entries(incomeFrequencyLabels).map(([k, l]) => (
                     <SelectItem key={k} value={k}>
                       {l}
                     </SelectItem>
@@ -177,7 +177,7 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
               onValueChange={(v) =>
                 setForm((p) => ({
                   ...p,
-                  category: v as SubscriptionCategory,
+                  category: v as IncomeCategory,
                   customCategory: "",
                 }))
               }
@@ -186,9 +186,9 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {defaultSubscriptionCategories.map((cat) => (
+                {defaultIncomeCategories.map((cat) => (
                   <SelectItem key={cat} value={cat}>
-                    {categoryLabels[cat] || cat}
+                    {incomeCategoryLabels[cat] || cat}
                   </SelectItem>
                 ))}
                 <SelectItem key="custom-category-option" value="other">Custom Category...</SelectItem>
@@ -201,7 +201,7 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
               <Label htmlFor="customCat">Custom Category</Label>
               <Input
                 id="customCat"
-                placeholder="e.g. Gaming"
+                placeholder="e.g. Side Hustle"
                 value={form.customCategory}
                 onChange={(e) =>
                   setForm((p) => ({ ...p, customCategory: e.target.value }))
@@ -211,13 +211,13 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="nextBilling">Next Billing Date *</Label>
+            <Label htmlFor="nextReceipt">Next Receipt Date *</Label>
             <Input
-              id="nextBilling"
+              id="nextReceipt"
               type="date"
-              value={form.nextBillingDate}
+              value={form.nextReceiptDate}
               onChange={(e) =>
-                setForm((p) => ({ ...p, nextBillingDate: e.target.value }))
+                setForm((p) => ({ ...p, nextReceiptDate: e.target.value }))
               }
               required
             />
@@ -244,7 +244,7 @@ export function AddSubscriptionDialog({ open, onOpenChange }: Props) {
               type="submit"
               className="bg-primary text-primary-foreground hover:bg-primary/90 glow-sm"
             >
-              Add Subscription
+              Add Income
             </Button>
           </div>
         </form>

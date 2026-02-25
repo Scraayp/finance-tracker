@@ -21,12 +21,17 @@ DROP POLICY IF EXISTS "Users can view their personal subscriptions" ON public.su
 DROP POLICY IF EXISTS "Users can create personal subscriptions" ON public.subscriptions;
 DROP POLICY IF EXISTS "Users can update their subscriptions" ON public.subscriptions;
 DROP POLICY IF EXISTS "Users can delete their subscriptions" ON public.subscriptions;
+DROP POLICY IF EXISTS "Users can view their personal incomes" ON public.incomes;
+DROP POLICY IF EXISTS "Users can create personal incomes" ON public.incomes;
+DROP POLICY IF EXISTS "Users can update their incomes" ON public.incomes;
+DROP POLICY IF EXISTS "Users can delete their incomes" ON public.incomes;
 
 -- Drop existing triggers (to avoid dependency errors)
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
 DROP TRIGGER IF EXISTS update_organizations_updated_at ON public.organizations;
 DROP TRIGGER IF EXISTS update_subscriptions_updated_at ON public.subscriptions;
+DROP TRIGGER IF EXISTS update_incomes_updated_at ON public.incomes;
 
 -- Drop existing functions
 DROP FUNCTION IF EXISTS public.get_current_user_id();
@@ -38,6 +43,7 @@ DROP FUNCTION IF EXISTS public.update_updated_at() CASCADE;
 
 -- Drop existing tables if they exist (for clean reinstall)
 DROP TABLE IF EXISTS public.subscriptions CASCADE;
+DROP TABLE IF EXISTS public.incomes CASCADE;
 DROP TABLE IF EXISTS public.organization_members CASCADE;
 DROP TABLE IF EXISTS public.organizations CASCADE;
 DROP TABLE IF EXISTS public.profiles CASCADE;
@@ -93,9 +99,31 @@ CREATE TABLE public.subscriptions (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Create incomes table
+CREATE TABLE public.incomes (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  name TEXT NOT NULL,
+  source TEXT NOT NULL,
+  amount DECIMAL(10, 2) NOT NULL,
+  currency TEXT NOT NULL DEFAULT 'EUR',
+  frequency TEXT CHECK (frequency IN ('daily', 'weekly', 'monthly', 'quarterly', 'semi-annual', 'annual', 'one-time')) NOT NULL,
+  category TEXT NOT NULL,
+  context TEXT CHECK (context IN ('personal', 'organisation')) NOT NULL,
+  organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  next_receipt_date DATE NOT NULL,
+  start_date DATE NOT NULL,
+  notes TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_subscriptions_user_id ON public.subscriptions(user_id);
 CREATE INDEX idx_subscriptions_organization_id ON public.subscriptions(organization_id);
+CREATE INDEX idx_incomes_user_id ON public.incomes(user_id);
+CREATE INDEX idx_incomes_organization_id ON public.incomes(organization_id);
 CREATE INDEX idx_organization_members_user_id ON public.organization_members(user_id);
 CREATE INDEX idx_organization_members_org_id ON public.organization_members(organization_id);
 
@@ -154,6 +182,7 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.organization_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.incomes ENABLE ROW LEVEL SECURITY;
 
 -- Profiles policies
 CREATE POLICY "Users can view their own profile"
@@ -254,6 +283,35 @@ CREATE POLICY "Users can delete their subscriptions"
     (context = 'organisation' AND is_org_admin(organization_id))
   );
 
+-- Incomes policies
+CREATE POLICY "Users can view their personal incomes"
+  ON public.incomes FOR SELECT
+  USING (
+    (context = 'personal' AND user_id = auth.uid()) OR
+    (context = 'organisation' AND is_org_member(organization_id))
+  );
+
+CREATE POLICY "Users can create personal incomes"
+  ON public.incomes FOR INSERT
+  WITH CHECK (
+    (context = 'personal' AND user_id = auth.uid()) OR
+    (context = 'organisation' AND is_org_member(organization_id))
+  );
+
+CREATE POLICY "Users can update their incomes"
+  ON public.incomes FOR UPDATE
+  USING (
+    (context = 'personal' AND user_id = auth.uid()) OR
+    (context = 'organisation' AND is_org_member(organization_id))
+  );
+
+CREATE POLICY "Users can delete their incomes"
+  ON public.incomes FOR DELETE
+  USING (
+    (context = 'personal' AND user_id = auth.uid()) OR
+    (context = 'organisation' AND is_org_admin(organization_id))
+  );
+
 -- Function to automatically create profile on user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
@@ -295,4 +353,8 @@ CREATE TRIGGER update_organizations_updated_at
 
 CREATE TRIGGER update_subscriptions_updated_at
   BEFORE UPDATE ON public.subscriptions
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
+CREATE TRIGGER update_incomes_updated_at
+  BEFORE UPDATE ON public.incomes
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();

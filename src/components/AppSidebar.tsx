@@ -250,11 +250,8 @@ export function AppSidebar({ onAddClick }: Props) {
           </div>
         )}
 
-        {/* Spacer */}
-        <div className="flex-1" />
-
         {/* Add button */}
-        <div className="px-4 pb-3">
+        <div className="px-4 pt-5 pb-3">
           <Button
             onClick={onAddClick}
             className={cn(
@@ -263,7 +260,7 @@ export function AppSidebar({ onAddClick }: Props) {
             )}
           >
             <Plus className="h-4 w-4" />
-            {!collapsed && <span className="ml-2">Add Subscription</span>}
+            {!collapsed && <span className="ml-2">Add Item</span>}
           </Button>
         </div>
 
