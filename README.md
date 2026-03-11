@@ -1,73 +1,150 @@
-# Welcome to your Lovable project
+# Finance Tracker
 
-## Project info
+Personal and organization-aware finance dashboard for tracking subscription spend, recurring income, and projected net balance.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+[![React](https://img.shields.io/badge/React-18-149ECA?logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-2F74C0?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-5-F7B500?logo=vite&logoColor=black)](https://vitejs.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20Postgres-0F172A?logo=supabase&logoColor=3ECF8E)](https://supabase.com/)
+[![Tailwind](https://img.shields.io/badge/TailwindCSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## Why This Project Stands Out
 
-**Use Lovable**
+This project is built as a production-style frontend + backend application, not just a UI demo.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Multi-tenant data model: supports both personal and organization contexts.
+- Secure-by-default backend: Supabase + Row Level Security policies.
+- Strong user flow: authentication, protected routes, onboarding/setup checks.
+- Business-ready metrics: monthly/annual expense, income, and net projections.
+- Modern DX: strict typing, linting, tests, and clean component architecture.
 
-Changes made via Lovable will be committed automatically to this repo.
+## Core Product Features
 
-**Use your preferred IDE**
+### Financial Tracking
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Create, edit, and remove subscriptions with billing cycles.
+- Create, edit, and remove incomes with configurable frequencies.
+- Toggle active/inactive entries without losing historical records.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Insights and Visualization
 
-Follow these steps:
+- Monthly and annual projections from recurring data.
+- Net monthly and annual balance cards.
+- Spend-by-category chart for subscription cost analysis.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Multi-Context Workspace
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- Personal dashboard mode.
+- Organization dashboard mode.
+- Context-aware filtering for subscriptions and incomes.
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Authentication and Access
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+- Email/password authentication.
+- OAuth sign-in with Google and Discord.
+- Password reset flow.
+- Protected routes and session persistence.
+- 2FA verification support via TOTP utility flow.
+
+## Architecture Snapshot
+
+```text
+React (Vite + TypeScript)
+	-> UI: Tailwind + shadcn/ui + Radix primitives
+	-> State/Server Sync: React Context + TanStack Query
+	-> Auth + Data: Supabase (Postgres + Auth + RLS)
+```
+
+### Key Technical Decisions
+
+- Context separation: `AuthContext`, `AppContext`, and `AppearanceContext` isolate concerns.
+- Type-driven modeling: shared domain types in `src/lib/types.ts`.
+- Database-first app logic: app state is loaded and synced via Supabase tables.
+- Safety gate: app displays setup requirements when Supabase env vars are missing.
+
+## Tech Stack
+
+- Frontend: React 18, TypeScript, Vite
+- UI: Tailwind CSS, shadcn/ui, Radix UI, Lucide icons
+- Data & Auth: Supabase (`@supabase/supabase-js`)
+- Charts: Recharts
+- Validation & Forms: Zod, React Hook Form
+- Testing: Vitest, Testing Library, jsdom
+- Linting: ESLint 9
+
+## Local Setup
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+- Supabase project
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment
+
+Create a `.env` file in the project root:
+
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_AUTH_REDIRECT_URL=http://localhost:5173
+```
+
+### 3. Initialize database
+
+Run `supabase-schema-fixed.sql` in your Supabase SQL Editor.
+
+If you encounter RLS recursion issues, review `DATABASE_README.md` for the migration/fix details.
+
+### 4. Run the app
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Open the app in your browser at the Vite URL shown in terminal.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Available Scripts
 
-**Use GitHub Codespaces**
+```bash
+npm run dev          # start local dev server
+npm run build        # production build
+npm run preview      # preview production build
+npm run lint         # run ESLint
+npm run lint:fix     # auto-fix lint issues
+npm run type-check   # TypeScript checks (no emit)
+npm run test         # run Vitest suite once
+npm run test:watch   # run tests in watch mode
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Security Notes
 
-## What technologies are used for this project?
+- Uses Supabase Auth for identity and session management.
+- Uses Postgres Row Level Security to enforce data isolation.
+- Distinguishes personal and organization data paths at both UI and DB layers.
 
-This project is built with:
+## What Recruiters Can Evaluate Quickly
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- Product thinking: clear user roles, contexts, and financial workflows.
+- Engineering quality: modular architecture and typed domain modeling.
+- Full-stack integration: frontend behavior driven by real backend policies.
+- UX execution: responsive dashboard patterns and actionable visual analytics.
 
-## How can I deploy this project?
+## Potential Next Iterations
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- Member invitation and organization collaboration workflow.
+- Budget goals and overspend alerting.
+- CSV import/export and data portability.
+- Notification/reminder engine for billing and income events.
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This repository currently has no explicit open-source license file.
